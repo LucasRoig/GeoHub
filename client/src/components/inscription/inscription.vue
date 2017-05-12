@@ -1,9 +1,9 @@
 <template>
     <div class="container">
-        <h1>Connexion</h1>
+        <h1>Inscription</h1>
         <div class="col-md-offset-4 col-md-4">
             <div class="form-group">
-                <p>Connectez-vous :</p>
+                <p>Inscrivez-vous :</p>
             </div>
             <div class="form-group">
                 <input type="text" class="form-control" name="username" placeholder="Nom d'utilisateur">
@@ -12,19 +12,16 @@
                 <input type="text" class="form-control" name="password" placeholder="Mot de passe">
             </div>
             <div class="form-group">
-                <button class="btn btn-default" name="submit" type="button">Se connecter</button>
+                <input type="text" class="form-control" name="conf_password" placeholder="Confirmez le mot de passe">
             </div>
             <div class="form-group">
-                <p>Vous êtes nouveau ?
-
-                    <router-link class="btn btn-default" to="/inscription" name="subscrib">S'inscrire</router-link>
-                </p>
+                <button class="btn btn-default" name="validate" type="button">Valider</button>
             </div>
         </div>
     </div>
 </template>
 <script>
     export default{
-        name:'connexion'
+        name:'inscription'
     }
 </script>

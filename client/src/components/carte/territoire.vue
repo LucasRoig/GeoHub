@@ -2,9 +2,7 @@
     <div class="container-fluid">
         <div class="row" id="head">
             <div class="col-md-2">
-                <btn type="button" class="btn btn-default btn-lg">
-                    Retour carte
-                </btn>
+                <router-link to="/carte" class="btn btn-default btn-lg"></router-link>
             </div>
             <div class="col-md-10">
                 <h1>Territoire</h1>
