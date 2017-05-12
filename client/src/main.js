@@ -10,6 +10,7 @@ import store from './store/store'
 import Connexion from './components/connexion/connexion.vue'
 import Carte from './components/carte/carte.vue'
 import Dataset from './components/dataset/dataset.vue'
+import TerritoireForm from './components/carte/territoire.vue'
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
@@ -21,6 +22,7 @@ export const router = new VueRouter({
     {path: '/carte', component:Carte},
     {path: '/connexion', component:Connexion},
     {path: '/dataset', component:Dataset},
+    {path: '/carte/territoire', component: TerritoireForm}
   ]
 })
 
