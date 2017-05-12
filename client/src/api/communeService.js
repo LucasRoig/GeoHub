@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
-import Server from './server'
+import Server from './server';
 
 var baseRoute = Server.address;
 Vue.use(VueResource);
