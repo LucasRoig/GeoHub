@@ -16,8 +16,9 @@
             </div>
             <div class="form-group">
                 <p>Vous êtes nouveau ?
-
-                    <router-link class="btn btn-default" to="/inscription" name="subscrib">S'inscrire</router-link>
+                    <router-link class="btn btn-default" to="/inscription" name="subscrib">
+                        S'inscrire
+                    </router-link>
                 </p>
             </div>
         </div>
