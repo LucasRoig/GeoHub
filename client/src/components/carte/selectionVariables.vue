@@ -34,8 +34,13 @@
                                                     <td class="col-md-4">
                                                         <p>{{ v.codeVar }}</p>
                                                     </td>
-                                                    <td class="col-md-2">
-                                                        <button class="btn btn-info" v-on:click='changeEtatVariable(v)'>
+                                                    <td class="col-md-2" v-if="v.id == variable.id">
+                                                        <button class="btn btn-danger" v-on:click='changeEtatVariable(v, "masquer")'>
+                                                            <span class ="glyphicon glyphicon-flag"></span> Masquer
+                                                        </button>
+                                                    </td>
+                                                    <td class="col-md-2" v-else>
+                                                        <button class="btn btn-info" v-on:click='changeEtatVariable(v, "afficher")'>
                                                             <span class ="glyphicon glyphicon-flag"></span> Afficher
                                                         </button>
                                                     </td>
@@ -65,19 +70,26 @@
             }
         },
         methods:{
-            changeEtatVariable(v){
-                console.log(v);
-                this.$store.dispatch(CarteTypes.SET_VARIABLE,v);
+            changeEtatVariable(v, c){
+                if (c == "afficher")
+                    this.$store.dispatch(CarteTypes.SET_VARIABLE,v);
+                else
+                    this.$store.dispatch(CarteTypes.REMOVE_VARIABLE,v);
             },
         },
         computed:{
-            dataset: function(){
+            dataset: function() {
                 return this.$store.getters[DatasetTypes.GET_DATASET_LIST]
             },
+            variable: function () {
+                return this.$store.getters[CarteTypes.GET_VARIABLE]
+            }
         },
         beforeCreate:function(){
-            this.$store.dispatch(DatasetTypes.FETCH_DATASET)
+            if(this.dataset = [])
+                this.$store.dispatch(DatasetTypes.FETCH_DATASET);
         },
+        
     }
 </script>
 <style>

@@ -36,7 +36,10 @@ export default{
         },
         [CarteTypes.SET_VARIABLE]: (context, v) => {
             context.commit(CarteTypes.SET_VARIABLE, v);
-        }
+        },
+        [CarteTypes.REMOVE_VARIABLE]: (context, v) => {
+            context.commit(CarteTypes.REMOVE_VARIABLE, v);
+        },
     },
     mutations:{
         [CarteTypes.ADD_POLYGON]: (state, polygon) => {
@@ -61,6 +64,9 @@ export default{
             for (var i=1; i<5; i++){
                 state.quintiles[i-1] = donnees[Math.floor((donnees.length / 5) * i)].valeur;
             }
-        }
+        },
+        [CarteTypes.REMOVE_VARIABLE]: (state, v) => {
+            state.variable = {};
+        },
     }
 }
