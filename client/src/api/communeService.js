@@ -9,6 +9,9 @@ export default{
     getAllCommune: () =>{
         return Vue.http.get(baseRoute + '/commune');
     },
+    getComuneOfDep:(depId) =>{
+        return Vue.http.get(baseRoute + '/departement/' + depId +'/commune');
+    },
     getGeom: (id) =>{
         return Vue.http.get(baseRoute + '/commune/' + id + '/geom');
     },

@@ -14,7 +14,16 @@ export default{
     },
     actions:{
         [TerritoireTypes.ADD_COMMUNE]: (context, ter) =>{
-            context.commit(TerritoireTypes.ADD_COMMUNE,ter);
+            if(ter.type == 'DEP'){
+                CommuneService.getComuneOfDep(ter.id)
+                .then(response => {
+                    response.body.forEach( c => {
+                        context.dispatch(TerritoireTypes.ADD_COMMUNE,c);
+                    })
+                })
+            }else{
+                context.commit(TerritoireTypes.ADD_COMMUNE,ter);
+            }
             context.commit(TerritoireTypes.SET_RESULT_RECHERCHE, []);
         },
         [TerritoireTypes.RECHERCHE_TERRITOIRE]: (context, query) =>{

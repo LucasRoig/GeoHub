@@ -3,6 +3,7 @@
         <div class="row">
             <sidebar class="col-md-1"></sidebar>
             <div class="col-md-11">
+                {{variable.nom}}
                 <v-map :style="{height: mapSize}" :zoom="zoom" :center="center" :maxZoom="maxzoom" :minZoom="minzoom">
                     <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
                     <v-geojson-layer :geojson="geojson" :options="options"></v-geojson-layer>
@@ -78,9 +79,9 @@
             }
         },
         beforeCreate:function () {
-            DatasetService.getAllDataset().then(response => {
+            /*DatasetService.getAllDataset().then(response => {
                 this.$store.dispatch(CarteTypes.SET_VARIABLE, response.body[0].variables[0]);
-            })
+            })*/
         }
     }
 </script>

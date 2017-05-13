@@ -22,10 +22,14 @@ export default{
     },
     actions:{
         [TerritoireTypes.ADD_COMMUNE]: (context, ter) =>{
-            CommuneService.getGeom(ter.id)
-                .then(response => {
-                    context.commit(CarteTypes.ADD_POLYGON,response.body);
-                })
+            if(ter.type == 'DEP'){
+
+            }else{
+                CommuneService.getGeom(ter.id)
+                    .then(response => {
+                        context.commit(CarteTypes.ADD_POLYGON,response.body);
+                    })
+            }
         },
         [TerritoireTypes.REMOVE_COMMUNE]: (context, ter) => {
             context.commit(CarteTypes.REMOVE_POLYGON, ter);
