@@ -36,7 +36,7 @@
                                                     </td>
                                                     <td class="col-md-2">
                                                         <button class="btn btn-info" v-on:click='changeEtatVariable(v)'>
-                                                            <span class ="glyphicon glyphicon-flag"></span>
+                                                            <span class ="glyphicon glyphicon-flag"></span> Afficher
                                                         </button>
                                                     </td>
                                                 </tr>
