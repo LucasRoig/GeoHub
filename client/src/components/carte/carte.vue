@@ -4,7 +4,6 @@
             <sidebar class="col-md-1"></sidebar>
             <div class="col-md-11">
                 {{variable.nom}}
-                {{bounds}}
                 <v-map :style="{height: mapSize}" :bounds="bounds">
                     <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
                     <v-geojson-layer :geojson="geojson" :options="options"></v-geojson-layer>
@@ -33,11 +32,36 @@
         data () {
             let component = this;
             return {
-                maxzoom:12,
-                minzoom:6,
-                zoom:6,
-                center:[48, -1.219482],
                 options: {
+                    onEachFeature:function(feature, layer) {
+                        layer.on({
+                            mouseover: function (e) {
+                                var layer = e.target;
+
+                                layer.setStyle({
+                                    weight: 5,
+                                    color: '#666',
+                                    opacity:'1',
+                                    dashArray: '',
+                                    fillOpacity: 0.7
+                                });
+
+                                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                                    layer.bringToFront();
+                                }
+                            },
+                            mouseout: function(e) {
+                                var layer = e.target;
+                                layer.setStyle({
+                                    weight: 1,
+                                    opacity: 1,
+                                    color: 'white',
+                                    dashArray: '3',
+                                    fillOpacity: 0.7,
+                                })
+                            }
+                        });
+                    },
                     style: function (feature) {
                         let couleur = '#FFFFFF';
                         if(component.variable.donnees){
@@ -50,14 +74,15 @@
                                         val > component.quintiles[0] ? '#FC4E2A':
                                                                         '#FFEDA0';
                             }
-                        }
-                        return {weight: 2,
-                            color: '#000000',
-                            opacity: 0.2,
-                            fillColor: couleur,
-                            //fillColor: '#000000',
-                            fillOpacity: 0.5
-                        }
+                        };
+                        return {
+                            weight: 1,
+                            opacity: 1,
+                            color: 'white',
+                            dashArray: '3',
+                            fillOpacity: 0.7,
+                            fillColor: couleur
+                        };
                     }
                 },
                 url:'https://api.mapbox.com/styles/v1/drazcro/cj2kn8xad00272rnz8g80d8ei/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZHJhemNybyIsImEiOiJjajJsbTR5ZzIwMDBpMnFvN25qZ3B5Nzh4In0._BLUaFg4dTSlYyf-zqpM4g',
