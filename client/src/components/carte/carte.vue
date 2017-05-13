@@ -4,7 +4,8 @@
             <sidebar class="col-md-1"></sidebar>
             <div class="col-md-11">
                 {{variable.nom}}
-                <v-map :style="{height: mapSize}" :zoom="zoom" :center="center" :maxZoom="maxzoom" :minZoom="minzoom">
+                {{bounds}}
+                <v-map :style="{height: mapSize}" :bounds="bounds">
                     <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
                     <v-geojson-layer :geojson="geojson" :options="options"></v-geojson-layer>
                     <!--<v-marker :lat-lng="marker"></v-marker>-->
@@ -18,6 +19,7 @@
     import sidebar from './sidebar.vue';
     import CommuneService from '../../api/communeService'
     import * as CarteTypes from '../../store/carte/carteTypes'
+    import * as TerritoireTypes from '../../store/carte/territoireTypes'
     import DatasetService from '../../api/datasetService'
     export default{
         name:'carte',
@@ -37,14 +39,18 @@
                 center:[48, -1.219482],
                 options: {
                     style: function (feature) {
-                        console.log(component.variable)
-                        let val = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0].valeur;
-                        let couleur = val > component.quintiles[3] ? '#800026':
-                                      val > component.quintiles[2] ? '#BD0026':
-                                      val > component.quintiles[1] ? '#E31A1C':
-                                      val > component.quintiles[0] ? '#FC4E2A':
-                                                                     '#FFEDA0';
-                        console.log(couleur);
+                        let couleur = '#FFFFFF';
+                        if(component.variable.donnees){
+                            let donnee = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0];
+                            if(donnee){
+                                let val = donnee.valeur;
+                                couleur = val > component.quintiles[3] ? '#800026':
+                                        val > component.quintiles[2] ? '#BD0026':
+                                        val > component.quintiles[1] ? '#E31A1C':
+                                        val > component.quintiles[0] ? '#FC4E2A':
+                                                                        '#FFEDA0';
+                            }
+                        }
                         return {weight: 2,
                             color: '#000000',
                             opacity: 0.2,
@@ -76,6 +82,27 @@
             },
             quintiles(){
                 return this.$store.getters[CarteTypes.GET_QUINTILES];
+            },
+            bounds(){
+                let bounds = [];
+                if(this.geoJson != {}){
+                    //let geoCopy = Object.assign({},this.geojson);
+                    //console.log(geoCopy)
+                    this.geojson.features.forEach(feature => {
+                        feature.geometry.coordinates.forEach(polygon => {
+                            polygon.forEach(linearRing => {
+                                linearRing.forEach(coordonnee=>{
+                                    bounds.push([coordonnee[1],coordonnee[0]])
+                                })
+                            })
+                        })
+                    })
+                }
+                if(bounds.length == 0){
+                    return L.latLngBounds([51,4],[42.5,-4])
+                }else{
+                    return L.latLngBounds(bounds)
+                }
             }
         },
         beforeCreate:function () {
