@@ -57,6 +57,7 @@
 </template>
 <script>
     import * as DatasetTypes from '../../store/dataset/datasetTypes'
+    import * as CarteTypes from '../../store/carte/carteTypes'
     export default{
         name:'dataset',
         data (){
@@ -64,8 +65,9 @@
             }
         },
         methods:{
-            changeEtatVariable(e){
-                e.preventDefault();
+            changeEtatVariable(v){
+                console.log(v);
+                this.$store.dispatch(CarteTypes.SET_VARIABLE,v);
             },
         },
         computed:{
