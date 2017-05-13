@@ -26,6 +26,9 @@
                 <h2>Resultat</h2>
             </div>
             <div class="col-md-8 col-md-offset-2" v-show="resultatRecherche.length > 0">
+                <div class="alert alert-info chargement alert-res" role="alert">
+                    <p>Chargement des données ...</p>
+                </div>
                 <table class="table table-bordered table-responsive text-center">
                     <tbody>
                         <tr class="row" v-for="res,i in resultatRecherche">
@@ -43,7 +46,9 @@
                 </table>
             </div>
             <div class="col-md-8 col-md-offset-2" v-show="resultatRecherche.length <= 0">
-                <p>Pas de résultats !</p>
+                <div class="alert alert-warning" role="alert">
+                    <p>Pas de résultats !</p>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -51,6 +56,9 @@
                 <h2 class="col-md-offset-2">Communes ajoutées</h2>
             </div>
             <div class="col-md-8 col-md-offset-2">
+                <div class="alert alert-info chargement alert-ajout" role="alert">
+                    <p>Chargement des données ...</p>
+                </div>
                 <table class="table table-bordered table-responsive text-center">
                     <tbody>
                         <tr class="row" v-for="com, i in territoire">
@@ -58,11 +66,16 @@
                                 {{com.nom}}
                             </td>
                             <td class="col-md-2">
-                                <button class="btn btn-sm" type="button"  v-on:click="removeCommune(i)">Supprimer</button>
+                                <button class="btn btn-sm" type="button" v-on:click="removeCommune(i)">Supprimer</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="col-md-8 col-md-offset-2" v-show="territoire.length <= 0">
+                <div class="alert alert-warning" role="alert">
+                    <p>Pas de territoires ajoutés !</p>
+                </div>
             </div>
         </div>
     </div>
@@ -73,15 +86,17 @@
         name:'territoire',
         data (){
             return{
-                query:""
+                query:"",
             }
         },
         methods:{
           search(e){
               e.preventDefault();
+              $('.alert-res').fadeIn(50);
               this.$store.dispatch(TerritoireTypes.RECHERCHE_TERRITOIRE,this.query);
           },
-          addCommune(i){
+          addCommune(i) {
+              $('.alert-ajout').fadeIn(50);
               this.$store.dispatch(TerritoireTypes.ADD_COMMUNE,this.resultatRecherche[i]);
           },
           removeCommune(i) {
@@ -90,12 +105,14 @@
         },
         computed:{
           territoire:function(){
+              $('.alert-ajout').fadeOut(50);
               return this.$store.getters[TerritoireTypes.GET_COMMUNES];
           },
           resultatRecherche:function () {
+              $('.alert-res').fadeOut(50);
               return this.$store.getters[TerritoireTypes.GET_RESULT_RECHERCHE];
-          }
-        }
+          },
+        },
     }
 </script>
 <style>
@@ -123,5 +140,14 @@
 
     p {
         margin: 0;
+    }
+
+    .alert {
+        text-align: center;
+    }
+
+    .chargement {
+        display: none;
+        margin-bottom: 2rem;
     }
 </style>
