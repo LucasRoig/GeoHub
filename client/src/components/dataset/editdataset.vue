@@ -3,11 +3,12 @@
         <div class="row" id="head">
             <div class="col-md-2">
                 <router-link to="/dataset" class="btn btn-default btn-lg">
-                    Retour Dataset
+                    Retour
                 </router-link>
             </div>
             <div class="col-md-10">
-                <h1>Édition</h1>
+                <h1>{{dataset.nom}}</h1>
+
             </div>
         </div>
         <div class="row">
@@ -22,39 +23,21 @@
                                 Code
                             </th>
                             <th class="col-md-2">
-                                <button class="btn btn-primary pull-right">
-                                    <span class ="glyphicon glyphicon-plus"></span>
-                                </button>
+                                <router-link class="btn btn-primary pull-right" :to="'/dataset/' + dataset.id + '/importVariables'">
+                                    <span class ="glyphicon glyphicon-plus"></span> Importer des variables
+                                </router-link>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="row">
+                        <tr class="row" v-for="v in dataset.variables">
                             <td class="col-md-5">
-                                <p>aaaaaaaaaaaaaa</p>
+                                <p>{{v.nom}}</p>
                             </td>
                             <td class="col-md-5">
-                                <p>bbbbbbbbbbbbbb</p>
+                                <p>{{v.codeVar}}</p>
                             </td>
                             <td class="col-md-2">
-                                <div class="input-group-btn">
-                                    <router-link class="btn btn-info" to="">
-                                        <span class ="glyphicon glyphicon-pencil"></span>
-                                    </router-link>
-                                    <button class="btn btn-danger">
-                                        <span class ="glyphicon glyphicon-remove"></span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                       <tr class="row">
-                            <td class="col-md-5">
-                                <p>aaaaaaaaaaaaaa</p>
-                            </td>
-                            <td class="col-md-5">
-                                <p>bbbbbbbbbbbbbb</p>
-                            </td>
-                           <td class="col-md-2">
                                 <div class="input-group-btn">
                                     <router-link class="btn btn-info" to="">
                                         <span class ="glyphicon glyphicon-pencil"></span>
@@ -72,7 +55,15 @@
     </div>
 </template>
 <script>
+    import * as DatasetTypes from '../../store/dataset/datasetTypes'
     export default{
-        name:'editdataset'
+        name:'editdataset',
+        computed:{
+            dataset(){
+                return this.$store.getters[DatasetTypes.GET_DATASET_LIST].filter(d => d.id == this.$route.params.id)[0]
+            }
+        },
+        created:function(){
+        }
     }
 </script>

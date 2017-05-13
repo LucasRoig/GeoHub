@@ -10,37 +10,22 @@
                         </th>
                         <th class="col-md-2">
                             <router-link to="/dataset/ajouter" class="btn btn-primary pull-right">
-                                <span class ="glyphicon glyphicon-plus"></span>
+                                <span class ="glyphicon glyphicon-plus"></span> Créer un dataset
                             </router-link>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="row">
+                    <tr class="row" v-for="d in datasetList">
                         <td class="col-md-10">
-                            <p>aaaaaaaaaaaaaa</p>
+                            <p>{{d.nom}}</p>
                         </td>
                         <td class="col-md-2">
                             <div class="input-group-btn">
-                                <router-link class="btn btn-info" to="/editdataset">
+                                <router-link class="btn btn-info" :to="'/dataset/' + d.id">
                                     <span class ="glyphicon glyphicon-pencil"></span>
                                 </router-link>
-                                <button class="btn btn-danger">
-                                    <span class ="glyphicon glyphicon-remove"></span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="row">
-                        <td class="col-md-10">
-                            <p>aaaaaaaaaaaaaa</p>
-                        </td>
-                        <td class="col-md-2">
-                            <div class="input-group-btn">
-                                <router-link class="btn btn-info" to="/editdataset">
-                                    <span class ="glyphicon glyphicon-pencil"></span>
-                                </router-link>
-                                <button class="btn btn-danger">
+                                <button class="btn btn-danger" v-on:click='deleteDataset(d.id)'>
                                     <span class ="glyphicon glyphicon-remove"></span>
                                 </button>
                             </div>
@@ -52,8 +37,22 @@
     </div>
 </template>
 <script>
+    import * as DatasetTypes from '../../store/dataset/datasetTypes'
     export default{
-        name:'dataset'
+        name:'dataset',
+        methods:{
+            deleteDataset(id){
+                this.$store.dispatch(DatasetTypes.DELETE_DATASET,id);
+            },
+        },
+        computed:{
+            datasetList(){
+                return this.$store.getters[DatasetTypes.GET_DATASET_LIST]
+            }
+        },
+        beforeCreate:function(){
+            this.$store.dispatch(DatasetTypes.FETCH_DATASET)
+        }
     }
 </script>
 <style>

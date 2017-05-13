@@ -1,8 +1,10 @@
 <template>
     <div class="container">
+
         <div class="row"  id="head">
             <h1>Importer un dataset</h1>
         </div>
+
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="input-group input-group-lg">
@@ -14,9 +16,39 @@
                 </div>
             </div>
         </div>
+            
+        <!--
+        <div v-show="importedVariable.length != 0 && !isSending">
+            <table class="table table-responsive table-striped">
+                <thead>
+                    <th>Nom Variable</th>
+                    <th>Code Variable</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr v-for="v in importedVariable">
+                        <td>{{v.nom}}</td>
+                        <td>{{v.codeVar}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-primary" v-on:click='sendToServer'>Envoyer vers le serveur</button>
+        </div>
+        -->
+        <div v-show="isSending">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" :style="{width: progress + '%'}">
+                    {{progress + "%"}}
+                </div>
+            </div>
+        </div>
+
+        
     </div>
 </template>
 <script>
+    import * as ImportVariableTypes from '../../store/variable/importVariableTypes'
     export default{
         name:'dataset',
         data() {
@@ -26,14 +58,25 @@
         },
         methods: {
             importer(f) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    console.log(reader.result);
-                };
-                reader.readAsText(this.files);
+                this.$store.dispatch(ImportVariableTypes.PARSE_FILE,{file:this.files,datasetId:this.$route.params.id})
             },
             change(f) {
                 this.files = f.target.files[0];
+            },
+            sendToServer(e){
+                //this.$route.params.id est l'id du dataset dans lequel on veut ajouter les variables.
+                this.$store.dispatch(ImportVariableTypes.SEND_TO_SERVER,this.$route.params.id)
+            }
+        },
+        computed:{
+            /*importedVariable(){
+                return this.$store.getters[ImportVariableTypes.GET_IMPORTED_VARIABLES]
+            },*/
+            isSending(){
+                return this.$store.getters[ImportVariableTypes.IS_SENDING]
+            },
+            progress(){
+                return this.$store.getters[ImportVariableTypes.GET_PROGRESS]
             }
         }
     }

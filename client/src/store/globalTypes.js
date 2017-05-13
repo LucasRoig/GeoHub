@@ -1,0 +1,1 @@
+export const NAVIGATE = "Globals/NAVIGATE"
