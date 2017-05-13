@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid">
+    <div class="container">
         <h1>Dataset</h1>
         <div class="col-md-offset-1 col-md-10">
             <table class="table table-bordered table-responsive text-center">
