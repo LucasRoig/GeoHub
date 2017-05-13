@@ -17,6 +17,7 @@
     import sidebar from './sidebar.vue';
     import CommuneService from '../../api/communeService'
     import * as CarteTypes from '../../store/carte/carteTypes'
+    import DatasetService from '../../api/datasetService'
     export default{
         name:'carte',
         components: {
@@ -27,18 +28,27 @@
                 sidebar
               },
         data () {
+            let component = this;
             return {
                 maxzoom:12,
                 minzoom:6,
                 zoom:6,
                 center:[48, -1.219482],
                 options: {
-                    style: function () {
-                        return {
-                            weight: 2,
-                            color: '#ECEFF1',
+                    style: function (feature) {
+                        console.log(component.variable)
+                        let val = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0].valeur;
+                        let couleur = val > component.quintiles[3] ? '#800026':
+                                      val > component.quintiles[2] ? '#BD0026':
+                                      val > component.quintiles[1] ? '#E31A1C':
+                                      val > component.quintiles[0] ? '#FC4E2A':
+                                                                     '#FFEDA0';
+                        console.log(couleur);
+                        return {weight: 2,
+                            color: '#000000',
                             opacity: 0.2,
-                            fillColor: '#e4ce7f',
+                            fillColor: couleur,
+                            //fillColor: '#000000',
                             fillOpacity: 0.5
                         }
                     }
@@ -48,7 +58,10 @@
                 attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
                 marker: L.latLng(47.413220, -1.219482)
             }
-          },
+        },
+        methods:{
+            
+        },
         computed:{
             mapSize(){
                 console.log($(window).height());
@@ -56,11 +69,18 @@
             },
             geojson(){
                 return this.$store.getters[CarteTypes.GET_POLYGONS];
+            },
+            variable(){
+                return this.$store.getters[CarteTypes.GET_VARIABLE];
+            },
+            quintiles(){
+                return this.$store.getters[CarteTypes.GET_QUINTILES];
             }
         },
         beforeCreate:function () {
-
-        },
-
+            DatasetService.getAllDataset().then(response => {
+                this.$store.dispatch(CarteTypes.SET_VARIABLE, response.body[0].variables[0]);
+            })
+        }
     }
 </script>
