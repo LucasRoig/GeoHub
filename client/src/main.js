@@ -11,6 +11,8 @@ import Connexion from './components/connexion/connexion.vue'
 import Inscription from './components/inscription/inscription.vue'
 import Carte from './components/carte/carte.vue'
 import Dataset from './components/dataset/dataset.vue'
+import ImportDataset from './components/dataset/import.vue'
+import AjoutDataset from './components/dataset/ajout.vue'
 import EditDataset from './components/dataset/editdataset.vue'
 import TerritoireForm from './components/carte/territoire.vue'
 
@@ -25,6 +27,9 @@ export const router = new VueRouter({
     {path: '/connexion', component:Connexion},
     {path: '/inscription', component:Inscription},
     {path: '/dataset', component:Dataset},
+    {path: '/carte/territoire', component: TerritoireForm},
+    {path: '/dataset/ajouter', component: AjoutDataset},
+    {path: '/dataset/importer', component: ImportDataset},
     {path: '/editdataset', component:EditDataset},
     {path: '/carte/territoire', component: TerritoireForm}
   ]

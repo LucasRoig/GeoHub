@@ -9,9 +9,9 @@
                             Nom
                         </th>
                         <th class="col-md-2">
-                            <button class="btn btn-primary pull-right">
+                            <router-link to="/dataset/ajouter" class="btn btn-primary pull-right">
                                 <span class ="glyphicon glyphicon-plus"></span>
-                            </button>
+                            </router-link>
                         </th>
                     </tr>
                 </thead>
