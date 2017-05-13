@@ -9,6 +9,7 @@ import TerritoireModule from './carte/territoireModule'
 import DatasetModule from './dataset/datasetModule'
 import CreateDatasetFormModule from './dataset/createDatasetFormModule'
 import ImportVariableModule from './variable/importVariableModule'
+import InfoControlModule from './carte/infoControlModule'
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -18,7 +19,8 @@ export default new Vuex.Store({
         TerritoireModule,
         DatasetModule,
         CreateDatasetFormModule,
-        ImportVariableModule
+        ImportVariableModule,
+        InfoControlModule
     },
     actions:{
         [GlobalTypes.NAVIGATE]:(context,params) => {
