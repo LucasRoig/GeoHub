@@ -23,11 +23,14 @@ export default{
     actions:{
         [TerritoireTypes.ADD_COMMUNE]: (context, ter) =>{
             if(ter.type == 'DEP'){
-
+                CommuneService.getGeomOfCommuneInDep(ter.id)
+                .then(res => {
+                    context.commit(CarteTypes.ADD_POLYGON,res.body);
+                })
             }else{
                 CommuneService.getGeom(ter.id)
                     .then(response => {
-                        context.commit(CarteTypes.ADD_POLYGON,response.body);
+                        context.commit(CarteTypes.ADD_POLYGON,[response.body]);
                     })
             }
         },
@@ -43,8 +46,13 @@ export default{
     },
     mutations:{
         [CarteTypes.ADD_POLYGON]: (state, polygon) => {
-            let newGeo = Object.assign({},state.polygonsList);
-            newGeo.features.push(polygon);
+            let newGeo = {
+                    type: "FeatureCollection",
+                    features:state.polygonsList.features
+            }
+            polygon.forEach(p => {
+                newGeo.features.push(p);
+            })
             state.polygonsList = newGeo;
         },
         [CarteTypes.REMOVE_POLYGON]: (state, ter) => {

@@ -18,7 +18,7 @@ export default{
                 CommuneService.getComuneOfDep(ter.id)
                 .then(response => {
                     response.body.forEach( c => {
-                        context.dispatch(TerritoireTypes.ADD_COMMUNE,c);
+                        context.commit(TerritoireTypes.ADD_COMMUNE,c);
                     })
                 })
             }else{

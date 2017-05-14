@@ -20,5 +20,15 @@ export default{
     },
     search: (str) => {
         return Vue.http.get(baseRoute + '/recherche/territoire/' + str);
+    },
+    getMultipleGeom: (communeList) => {
+        let com = [];
+        communeList.forEach(c => {
+            com.push({type:"COM",codeGeo:c.id});
+        });
+        return Vue.http.post(baseRoute + '/geom/getGeom', com);
+    },
+    getGeomOfCommuneInDep: (depId) => {
+        return Vue.http.get(baseRoute + '/geom/dep/' + depId + '/getGeomOfCommune');
     }
 }
