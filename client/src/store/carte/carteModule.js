@@ -25,6 +25,9 @@ export default{
         [CarteTypes.SET_PALETTE]: (context, p) => {
             context.commit(CarteTypes.SET_PALETTE, p);
         },
+        [CarteTypes.SET_QUINTILES]: (context, q) => {
+            context.commit(CarteTypes.SET_QUINTILES, q);
+        },
     },
     mutations:{
         [CarteTypes.SET_VARIABLE]: (state, v) => {
@@ -45,6 +48,9 @@ export default{
         },
         [CarteTypes.SET_PALETTE]: (state, p) => {
           state.palette = p;
+        },
+        [CarteTypes.SET_QUINTILES]: (state, q) => {
+          state.quintiles = q;
         },
     }
 }

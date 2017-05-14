@@ -3,7 +3,12 @@
         <div class="row">
             <sidebar class="col-md-1"></sidebar>
             <div class="col-md-11">
-                {{variable.nom}}
+                <div class="row" id="head" v-if="variable.nom">
+                    <div class="col-md-12">
+                        <h1>{{ variable.nom }}</h1>
+                    </div>
+                </div>
+                <editLegende v-on:s-change="updateLegende" v-on:s-change-palette="updatePalette"></editLegende>
                 <v-map v-on:l-ready="go" :style="{height: mapSize}" :bounds="bounds">
                     <v-tilelayer :url="url"></v-tilelayer>
                     <v-geojson-layer :geojson="geoJSON" :options="options"></v-geojson-layer>
@@ -15,6 +20,7 @@
 <script>
     import Vue2Leaflet from 'vue2-leaflet';
     import sidebar from './sidebar.vue';
+    import editLegende from './editLegende.vue';
     import CommuneService from '../../api/communeService'
     import * as CarteTypes from '../../store/carte/carteTypes'
     import * as TerritoireTypes from '../../store/carte/territoireTypes'
@@ -27,6 +33,7 @@
                 'v-geojson-layer' :Vue2Leaflet.GeoJSON,
                 'v-marker': Vue2Leaflet.Marker,
                 sidebar,
+                editLegende,
               },
         data () {
             let component = this;
@@ -101,30 +108,29 @@
         },
         methods:{
             /*C'est la methode qui charge les controles sur la map
-            Si ca plant il faut verifier la ligne this.$children[i].mapObject*/
+            Si ca plante il faut verifier la ligne this.$children[i].mapObject*/
             go(e){
                 let component = this;
-                let map = this.$children[1].mapObject;
+                this.map = this.$children[2].mapObject;
+                let map = this.map
+                console.log(this.map);
                 this.legendControl.onAdd = function(map){
-                                var div = L.DomUtil.create('div', 'info legend'),
-                                    grades = component.quintiles,
-                                    colors = component.palette,
-                                    labels = [],
-                                    from, to;
-                                labels.push(
-                                        '<i style="background:' + colors[0] + '"></i> ' +
-                                        0 + '&ndash;' + grades[0]);
-                                for (var i = 0; i < grades.length; i++) {
-                                    from = grades[i];
-                                    to = grades[i + 1];
-
-                                    labels.push(
-                                        '<i style="background:' + colors[i+1] + '"></i> ' +
-                                        from + (to ? '&ndash;' + to : '+'));
-                                }
-                                div.innerHTML = labels.join('<br>');
-                                return div;
-                        },
+                    this._div = L.DomUtil.create('div', 'info legend');
+                    this.update(component.quintiles,component.palette);
+                    return this._div;
+                };
+                this.legendControl.update = function(grades,colors){
+                    console.log(colors)
+                    let labels = [],
+                        from, to;;
+                    labels.push('<i style="background:' + colors[0] + '"></i> ' + 0 + '&ndash;' + grades[0]);
+                    for (var i = 0; i < grades.length; i++) {
+                        from = grades[i];
+                        to = grades[i + 1];
+                        labels.push('<i style="background:' + colors[i+1] + '"></i> ' + from + (to ? '&ndash;' + to : '+'));
+                    }
+                    this._div.innerHTML = labels.join('<br>');
+                }
                 this.legendControl.addTo(map);
                 //Info
                 this.infoControl.onAdd = function (map) {
@@ -167,11 +173,29 @@
                 }else{
                     this.bounds =  L.latLngBounds(bounds)
                 }
+            },
+            updateLegende() {
+                this.legendControl.update(this.quintiles,this.palette)
+                for(var layer in this.map._layers){
+                    console.log(layer)
+                    this.map._layers[layer].resetStyle();
+                    if(this.map._layers[layer].resetStyle)
+                        this.map._layers[layer].resetStyle();
+                }
+            },
+            updatePalette(palette){
+                this.legendControl.update(this.quintiles,palette)
+                console.log(this.map._layers)
+                for(var layer in this.map._layers){
+                    console.log(this.map._layers[layer])
+                    if(this.map._layers[layer].resetStyle)
+                        this.map._layers[layer].resetStyle();
+                }
             }
         },
         computed:{
             mapSize(){
-                return ($(window).height() - 80)+'px';
+                return ($(window).height() - 100)+'px';
             },
             variable(){
                 return this.$store.getters[CarteTypes.GET_VARIABLE];
