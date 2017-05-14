@@ -17,6 +17,7 @@ import EditDataset from './components/dataset/editdataset.vue'
 import TerritoireForm from './components/carte/territoire.vue'
 import SelectionVariables from './components/carte/selectionVariables.vue'
 import EditLegende from './components/carte/editLegende.vue'
+import Graphique from './components/statistique/graphique.vue'
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
@@ -36,6 +37,7 @@ export const router = new VueRouter({
     {path: '/carte/territoire', component: TerritoireForm},
     {path: '/carte/selection-variables', component: SelectionVariables},
     {path: '/carte/editLegende', component: EditLegende},
+    {path: '/graphique', component: Graphique}
   ]
 })
 

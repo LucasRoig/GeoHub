@@ -14,39 +14,41 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" v-show="dataset.length > 0">
                     <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingOne">
-                            <div class="panel-title">
-                                <a role="button" v-for="d, i in dataset" data-toggle="collapse" data-parent="#accordion" :href="'#'+d.id" aria-expanded="true" aria-controls="collapseOne">
-                                    {{ d.nom }}
-                                </a>
+                        <div v-for="d, i in dataset">
+                            <div class="panel-heading"   role="tab" id="headingOne">
+                                <div class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion" :href="'#'+d.id" aria-expanded="true" aria-controls="collapseOne">
+                                        {{ d.nom }}
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        <div v-for="d, i in dataset" :id="d.id" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-responsive text-center">
-                                            <tbody>
-                                                <tr class="row" v-for="v in d.variables">
-                                                    <td class="col-md-7">
-                                                        <p>{{ v.nom }}</p>
-                                                    </td>
-                                                    <td class="col-md-4">
-                                                        <p>{{ v.codeVar }}</p>
-                                                    </td>
-                                                    <td class="col-md-2" v-if="v.id == variable.id">
-                                                        <button class="btn btn-danger" v-on:click='changeEtatVariable(v, "masquer")'>
-                                                            <span class ="glyphicon glyphicon-flag"></span> Masquer
-                                                        </button>
-                                                    </td>
-                                                    <td class="col-md-2" v-else>
-                                                        <button class="btn btn-info" v-on:click='changeEtatVariable(v, "afficher")'>
-                                                            <span class ="glyphicon glyphicon-flag"></span> Afficher
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                            <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body" :id="d.id">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-bordered table-responsive text-center">
+                                                <tbody>
+                                                    <tr class="row" v-for="v in d.variables">
+                                                        <td class="col-md-7">
+                                                            <p>{{ v.nom }}</p>
+                                                        </td>
+                                                        <td class="col-md-4">
+                                                            <p>{{ v.codeVar }}</p>
+                                                        </td>
+                                                        <td class="col-md-2" v-if="v.id == variable.id">
+                                                            <button class="btn btn-danger" v-on:click='changeEtatVariable(v, "masquer")'>
+                                                                <span class ="glyphicon glyphicon-flag"></span> Masquer
+                                                            </button>
+                                                        </td>
+                                                        <td class="col-md-2" v-else>
+                                                            <button class="btn btn-info" v-on:click='changeEtatVariable(v, "afficher")'>
+                                                                <span class ="glyphicon glyphicon-flag"></span> Afficher
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
