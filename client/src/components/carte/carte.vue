@@ -1,7 +1,7 @@
 <template>
 <div class="container-fluid">
         <div class="row">
-            <sidebar class="col-md-1" v-on:s-edit="modifShow(show == 'legende'? '' : 'legende')"></sidebar>
+            <sidebar style="padding-top:150px;" class="col-md-1" v-on:s-center="map.flyToBounds(bounds)" v-on:s-edit="modifShow(show == 'legende'? '' : 'legende')"></sidebar>
             <div class="col-md-11">
                 <div class="row" id="head" v-if="variable.nom">
                     <div class="col-md-12">
@@ -78,6 +78,7 @@
                     style: function (feature) {
                         let couleur = '#FFFFFF';
                         if(component.variable.donnees){
+                            console.log(component.palette)
                             let donnee = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0];
                             if(donnee){
                                 let val = donnee.valeur;
@@ -113,15 +114,15 @@
             go(e){
                 let component = this;
                 this.map = this.$children[1].mapObject;
+                this.geoJsonLayer = this.$children[1].$children[1].$geoJSON;
+                console.log(this.geoJsonLayer);
                 let map = this.map
-                console.log(this.map);
                 this.legendControl.onAdd = function(map){
                     this._div = L.DomUtil.create('div', 'info legend');
                     this.update(component.quintiles,component.palette);
                     return this._div;
                 };
                 this.legendControl.update = function(grades,colors){
-                    console.log(colors)
                     let labels = [],
                         from, to;;
                     labels.push('<i style="background:' + colors[0] + '"></i> ' + 0 + '&ndash;' + grades[0]);
@@ -177,21 +178,28 @@
             },
             updateLegende() {
                 this.legendControl.update(this.quintiles,this.palette)
-                for(var layer in this.map._layers){
+                this.geoJsonLayer.eachLayer(layer => {
+                    this.geoJsonLayer.resetStyle(layer)
+                })
+                /*for(var layer in this.map._layers){
                     console.log(layer)
                     this.map._layers[layer].resetStyle();
                     if(this.map._layers[layer].resetStyle)
                         this.map._layers[layer].resetStyle();
-                }
+                }*/
             },
             updatePalette(palette){
                 this.legendControl.update(this.quintiles,palette)
-                console.log(this.map._layers)
+                this.geoJsonLayer.eachLayer(layer => {
+                    this.geoJsonLayer.resetStyle(layer)
+                })
+                console.log('reseted')
+                /*console.log(this.map._layers)
                 for(var layer in this.map._layers){
                     console.log(this.map._layers[layer])
                     if(this.map._layers[layer].resetStyle)
                         this.map._layers[layer].resetStyle();
-                }
+                }*/
             },
             modifShow(v) {
                 console.log(v);
@@ -203,7 +211,9 @@
         },
         computed:{
             mapSize(){
-                return ($(window).height() - 100)+'px';
+                if(this.show == 'legende')
+                    return ($(window).height() - 215)+'px';
+                else return ($(window).height() - 140)+'px';
             },
             variable(){
                 return this.$store.getters[CarteTypes.GET_VARIABLE];

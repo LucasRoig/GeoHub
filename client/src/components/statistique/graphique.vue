@@ -161,6 +161,9 @@ export default{
                 donneeY = this.selectedVariable.donnees,
                 data = [];
             this.territoire.forEach(v => {
+                if(v.type == "DEP"){
+                    
+                }
                 let x = donneeX.find(d => d.codeGeo == v.id).valeur;
                 let y = donneeY.find(d => d.codeGeo == v.id).valeur;
                 data.push({x:x,y:y});
