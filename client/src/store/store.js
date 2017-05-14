@@ -22,9 +22,23 @@ export default new Vuex.Store({
         ImportVariableModule,
         InfoControlModule
     },
+    state:{
+        isLoading:false,
+    },
+    getters:{
+        [GlobalTypes.IS_LOADING]:state => state.isLoading,
+    },
     actions:{
         [GlobalTypes.NAVIGATE]:(context,params) => {
             router.push(params);
+        },
+        [GlobalTypes.SET_LOADING]:(context,loading) =>{
+            context.commit(GlobalTypes.SET_LOADING, loading);
+        }
+    },
+    mutations:{
+        [GlobalTypes.SET_LOADING]:(state,loading) =>{
+            state.isLoading = loading;
         }
     }
 })

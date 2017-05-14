@@ -56,6 +56,9 @@
                 this.$emit('s-change-palette',p);
             },
             getMaxValue() {
+                if(this.pourcentage){
+                    return 100;
+                }
                 var donnees = this.variable.donnees;
                 if(!donnees) {
                     return -1;
@@ -128,6 +131,9 @@
             variable(){
                 return this.$store.getters[CarteTypes.GET_VARIABLE];
             },
+            pourcentage(){
+                return this.$store.getters[CarteTypes.GET_POURCENTAGE];
+            }
         },
         mounted() {
             let component = this;

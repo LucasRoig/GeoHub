@@ -1,7 +1,7 @@
 <template>
 <div class="container-fluid">
         <div class="row">
-            <sidebar class="col-md-1" v-on:s-edit="modifShow(show == 'legende'? '' : 'legende')"></sidebar>
+            <sidebar style="padding-top:150px;" class="col-md-1" v-on:s-center="map.flyToBounds(bounds)" v-on:s-edit="modifShow(show == 'legende'? '' : 'legende')"></sidebar>
             <div class="col-md-11">
                 <div class="row" id="head" v-if="variable.nom">
                     <div class="col-md-12">
@@ -24,6 +24,7 @@
     import CommuneService from '../../api/communeService'
     import * as CarteTypes from '../../store/carte/carteTypes'
     import * as TerritoireTypes from '../../store/carte/territoireTypes'
+    import * as GlobalTypes from '../../store/globalTypes'
     import DatasetService from '../../api/datasetService'
     export default{
         name:'carte',
@@ -81,11 +82,22 @@
                             let donnee = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0];
                             if(donnee){
                                 let val = donnee.valeur;
-                                couleur = val > component.quintiles[3] ? component.palette[4]:
-                                          val > component.quintiles[2] ? component.palette[3]:
-                                          val > component.quintiles[1] ? component.palette[2]:
-                                          val > component.quintiles[0] ? component.palette[1]:
-                                                                         component.palette[0];
+                                if(component.typePourcentage && component.varRefPourcentage.donnees){
+                                    let ref = component.varRefPourcentage.donnees.find(d => parseInt(d.codeGeo) == feature.id)
+                                    if(ref){
+                                        val = (val/ref.valeur) * 100;
+                                    }else{
+                                        val = -1
+                                    }
+                                }
+                                feature.valeur = val;
+                                if(val >= 0){
+                                    couleur = val > component.quintiles[3] ? component.palette[4]:
+                                            val > component.quintiles[2] ? component.palette[3]:
+                                            val > component.quintiles[1] ? component.palette[2]:
+                                            val > component.quintiles[0] ? component.palette[1]:
+                                                                            component.palette[0];
+                                }   
                             }
                         };
                         return {
@@ -113,15 +125,14 @@
             go(e){
                 let component = this;
                 this.map = this.$children[1].mapObject;
+                this.geoJsonLayer = this.$children[1].$children[1].$geoJSON;
                 let map = this.map
-                console.log(this.map);
                 this.legendControl.onAdd = function(map){
                     this._div = L.DomUtil.create('div', 'info legend');
                     this.update(component.quintiles,component.palette);
                     return this._div;
                 };
                 this.legendControl.update = function(grades,colors){
-                    console.log(colors)
                     let labels = [],
                         from, to;;
                     labels.push('<i style="background:' + colors[0] + '"></i> ' + 0 + '&ndash;' + grades[0]);
@@ -141,13 +152,7 @@
                 };
                 this.infoControl.update = function(feature){
                     if(feature){
-                        let valeur;
-                        if(component.variable.donnees){
-                                let donnee = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0];
-                                if(donnee){
-                                    valeur = donnee.valeur;
-                                }
-                        }
+                        let valeur = feature.valeur;
                         this._div.innerHTML = '<h4>'+feature.properties.nom +'</h4>' +  (component.variable.nom ?
                             '<b>' + component.variable.nom + '</b>'+ ':' + valeur:'') + '<br>';
                     }else{
@@ -155,6 +160,7 @@
                     }
                 };
                 this.infoControl.addTo(map);
+               // this.$store.dispatch(GlobalTypes.SET_LOADING,false);
             },
             calculateBounds(){
                 let bounds = [];
@@ -177,24 +183,29 @@
             },
             updateLegende() {
                 this.legendControl.update(this.quintiles,this.palette)
-                for(var layer in this.map._layers){
+                this.geoJsonLayer.eachLayer(layer => {
+                    this.geoJsonLayer.resetStyle(layer)
+                })
+                /*for(var layer in this.map._layers){
                     console.log(layer)
                     this.map._layers[layer].resetStyle();
                     if(this.map._layers[layer].resetStyle)
                         this.map._layers[layer].resetStyle();
-                }
+                }*/
             },
             updatePalette(palette){
                 this.legendControl.update(this.quintiles,palette)
-                console.log(this.map._layers)
+                this.geoJsonLayer.eachLayer(layer => {
+                    this.geoJsonLayer.resetStyle(layer)
+                })
+                /*console.log(this.map._layers)
                 for(var layer in this.map._layers){
                     console.log(this.map._layers[layer])
                     if(this.map._layers[layer].resetStyle)
                         this.map._layers[layer].resetStyle();
-                }
+                }*/
             },
             modifShow(v) {
-                console.log(v);
                 this.show = v;
             },
             getShow() {
@@ -202,8 +213,17 @@
             }
         },
         computed:{
+            varRefPourcentage(){
+                return this.$store.getters[CarteTypes.GET_REFERENCE_POURCENTAGE];
+            },
+            typePourcentage(){
+                //true si l'on veut afficher les pourcentages
+                return this.$store.getters[CarteTypes.GET_POURCENTAGE];
+            },
             mapSize(){
-                return ($(window).height() - 100)+'px';
+                if(this.show == 'legende')
+                    return ($(window).height() - 215)+'px';
+                else return ($(window).height() - 140)+'px';
             },
             variable(){
                 return this.$store.getters[CarteTypes.GET_VARIABLE];
@@ -220,10 +240,12 @@
         },
         created:function () {
             //Charge les polygones sur la map
+            this.$store.dispatch(GlobalTypes.SET_LOADING,true);
             CommuneService.getGeomOfCommuneFromList(this.territoire)
             .then(res => {
                 this.geoJSON.features = res.body;
                 this.calculateBounds();
+                this.$store.dispatch(GlobalTypes.SET_LOADING,false);
             })         
         }
     }
