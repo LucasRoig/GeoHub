@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row" id="head">
             <div class="col-md-2">
                 <router-link to="/carte" class="btn btn-default btn-lg">
@@ -69,7 +69,9 @@
     import * as TerritoireTypes from '../../store/carte/territoireTypes'
     export default{
         name:'territoire',
-        components: {vSelect},
+        components: {
+            vSelect,
+        },
         data(){
             return{
                 options:[],
