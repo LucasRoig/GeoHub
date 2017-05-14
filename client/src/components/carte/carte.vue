@@ -78,15 +78,25 @@
                     style: function (feature) {
                         let couleur = '#FFFFFF';
                         if(component.variable.donnees){
-                            console.log(component.palette)
                             let donnee = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0];
                             if(donnee){
                                 let val = donnee.valeur;
-                                couleur = val > component.quintiles[3] ? component.palette[4]:
-                                          val > component.quintiles[2] ? component.palette[3]:
-                                          val > component.quintiles[1] ? component.palette[2]:
-                                          val > component.quintiles[0] ? component.palette[1]:
-                                                                         component.palette[0];
+                                if(component.typePourcentage && component.varRefPourcentage.donnees){
+                                    let ref = component.varRefPourcentage.donnees.find(d => parseInt(d.codeGeo) == feature.id)
+                                    if(ref){
+                                        val = (val/ref.valeur) * 100;
+                                    }else{
+                                        val = -1
+                                    }
+                                }
+                                feature.valeur = val;
+                                if(val >= 0){
+                                    couleur = val > component.quintiles[3] ? component.palette[4]:
+                                            val > component.quintiles[2] ? component.palette[3]:
+                                            val > component.quintiles[1] ? component.palette[2]:
+                                            val > component.quintiles[0] ? component.palette[1]:
+                                                                            component.palette[0];
+                                }   
                             }
                         };
                         return {
@@ -115,7 +125,6 @@
                 let component = this;
                 this.map = this.$children[1].mapObject;
                 this.geoJsonLayer = this.$children[1].$children[1].$geoJSON;
-                console.log(this.geoJsonLayer);
                 let map = this.map
                 this.legendControl.onAdd = function(map){
                     this._div = L.DomUtil.create('div', 'info legend');
@@ -142,13 +151,7 @@
                 };
                 this.infoControl.update = function(feature){
                     if(feature){
-                        let valeur;
-                        if(component.variable.donnees){
-                                let donnee = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0];
-                                if(donnee){
-                                    valeur = donnee.valeur;
-                                }
-                        }
+                        let valeur = feature.valeur;
                         this._div.innerHTML = '<h4>'+feature.properties.nom +'</h4>' +  (component.variable.nom ?
                             '<b>' + component.variable.nom + '</b>'+ ':' + valeur:'') + '<br>';
                     }else{
@@ -193,7 +196,6 @@
                 this.geoJsonLayer.eachLayer(layer => {
                     this.geoJsonLayer.resetStyle(layer)
                 })
-                console.log('reseted')
                 /*console.log(this.map._layers)
                 for(var layer in this.map._layers){
                     console.log(this.map._layers[layer])
@@ -202,7 +204,6 @@
                 }*/
             },
             modifShow(v) {
-                console.log(v);
                 this.show = v;
             },
             getShow() {
@@ -210,6 +211,13 @@
             }
         },
         computed:{
+            varRefPourcentage(){
+                return this.$store.getters[CarteTypes.GET_REFERENCE_POURCENTAGE];
+            },
+            typePourcentage(){
+                //true si l'on veut afficher les pourcentages
+                return this.$store.getters[CarteTypes.GET_POURCENTAGE];
+            },
             mapSize(){
                 if(this.show == 'legende')
                     return ($(window).height() - 215)+'px';

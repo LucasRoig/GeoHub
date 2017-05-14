@@ -6,8 +6,11 @@
                     Retour carte
                 </router-link>
             </div>
-            <div class="col-md-10">
+            <div class="col-md-6">
                 <h1>Selection variables</h1>
+            </div>
+            <div class="checkbox col-md-2">
+                <label><input type="checkbox" value="" v-model="pourcentage">Pourcentage</label>
             </div>
         </div>
 
@@ -28,24 +31,52 @@
                                     <div class="col-md-12">
                                         <table class="table table-bordered table-responsive text-center">
                                         <tbody>
-                                        <tr class="row" v-for="v in d.variables">
-                                            <td class="col-md-7">
-                                                <p>{{ v.nom }}</p>
-                                            </td>
-                                            <td class="col-md-4">
-                                                <p>{{ v.codeVar }}</p>
-                                            </td>
-                                            <td class="col-md-2" v-if="v.id == variable.id">
-                                                <button class="btn btn-danger" v-on:click='changeEtatVariable(v, "masquer")'>
-                                                    <span class ="glyphicon glyphicon-flag"></span> Masquer
-                                                </button>
-                                            </td>
-                                            <td class="col-md-2" v-else>
-                                                <button class="btn btn-info" v-on:click='changeEtatVariable(v, "afficher")'>
-                                                    <span class ="glyphicon glyphicon-flag"></span> Afficher
-                                                </button>
-                                            </td>
-                                        </tr>
+                                            <tr class="row" v-for="v in d.variables" v-if="!pourcentage">
+                                                <td class="col-md-7">
+                                                    <p>{{ v.nom }}</p>
+                                                </td>
+                                                <td class="col-md-4">
+                                                    <p>{{ v.codeVar }}</p>
+                                                </td>
+                                                <td class="col-md-1" v-if="v.id == variable.id">
+                                                    <button class="btn btn-danger" v-on:click='changeEtatVariable(v, "masquer")'>
+                                                        <span class ="glyphicon glyphicon-flag"></span> Masquer
+                                                    </button>
+                                                </td>
+                                                <td class="col-md-2" v-else>
+                                                    <button class="btn btn-info" v-on:click='changeEtatVariable(v, "afficher")'>
+                                                        <span class ="glyphicon glyphicon-flag"></span> Afficher
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr class="row" v-for="v in d.variables" v-if="pourcentage">
+                                                <td class="col-md-5">
+                                                    <p>{{ v.nom }}</p>
+                                                </td>
+                                                <td class="col-md-3">
+                                                    <p>{{ v.codeVar }}</p>
+                                                </td>
+                                                <td class="col-md-2" v-if="v.id == variable.id">
+                                                    <button class="btn btn-danger" v-on:click='changeEtatVariable(v, "masquer")'>
+                                                        <span class ="glyphicon glyphicon-flag"></span> Masquer
+                                                    </button>
+                                                </td>
+                                                <td class="col-md-2" v-else>
+                                                    <button class="btn btn-info" v-on:click='changeEtatVariable(v, "afficher")'>
+                                                        <span class ="glyphicon glyphicon-flag"></span> Afficher
+                                                    </button>
+                                                </td>
+                                                <td class="col-md-2" v-if="v.id == varRefPourcentage.id">
+                                                    <button class="btn btn-danger">
+                                                        <span class ="glyphicon glyphicon-flag"></span> Référence
+                                                    </button>
+                                                </td>
+                                                <td class="col-md-2" v-else>
+                                                    <button class="btn btn-info" v-on:click='changeReferencePourcentage(v)'>
+                                                        <span class ="glyphicon glyphicon-flag"></span> Référence
+                                                    </button>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                     </div>
@@ -70,6 +101,9 @@
             return{
             }
         },
+        components:{
+
+        },
         methods:{
             changeEtatVariable(v, c){
                 if (c == "afficher")
@@ -77,6 +111,9 @@
                 else
                     this.$store.dispatch(CarteTypes.REMOVE_VARIABLE,v);
             },
+            changeReferencePourcentage(v){
+                this.$store.dispatch(CarteTypes.SET_REFERENCE_POURCENTAGE,v);
+            }
         },
         computed:{
             dataset: function() {
@@ -84,6 +121,17 @@
             },
             variable: function () {
                 return this.$store.getters[CarteTypes.GET_VARIABLE]
+            },
+            pourcentage: {
+                get(){
+                    return this.$store.getters[CarteTypes.GET_POURCENTAGE]
+                },
+                set(p){
+                    this.$store.dispatch(CarteTypes.SET_POURCENTAGE,p);
+                }
+            },
+            varRefPourcentage(){
+                return this.$store.getters[CarteTypes.GET_REFERENCE_POURCENTAGE]
             }
         },
         mounted() {

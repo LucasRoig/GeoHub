@@ -8,3 +8,9 @@ export const GET_QUINTILES = 'carteModule/GET_QUINTILES'
 export const SET_QUINTILES = 'carteModule/SET_QUINTILES'
 export const GET_PALETTE = 'carteModule/GET_PALETTE'
 export const SET_PALETTE = 'carteModule/SET_PALETTE'
+
+export const GET_POURCENTAGE = 'carteModule/GET_POURCENTAGE'
+export const SET_POURCENTAGE = 'carteModule/SET_POURCENTAGE'
+
+export const GET_REFERENCE_POURCENTAGE = 'carteModule/GET_REFERENCE_POURCENTAGE'
+export const SET_REFERENCE_POURCENTAGE = 'carteModule/SET_REFERENCE_POURCENTAGE'
