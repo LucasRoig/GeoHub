@@ -6,37 +6,14 @@ import * as TerritoireTypes from './territoireTypes'
 import CommuneService from '../../api/communeService'
 export default{
     state:{
-        polygonsList: {
-            type: "FeatureCollection",
-            features:[]
-        },
-        variable: {
-            
-        },
+        variable: { },
         quintiles: [10, 20, 30, 40]
     },
     getters:{
-        [CarteTypes.GET_POLYGONS]: (state) => state.polygonsList,
         [CarteTypes.GET_VARIABLE]: (state) => state.variable,
         [CarteTypes.GET_QUINTILES]: (state) => state.quintiles
     },
     actions:{
-        [TerritoireTypes.ADD_COMMUNE]: (context, ter) =>{
-            if(ter.type == 'DEP'){
-                CommuneService.getGeomOfCommuneInDep(ter.id)
-                .then(res => {
-                    context.commit(CarteTypes.ADD_POLYGON,res.body);
-                })
-            }else{
-                CommuneService.getGeom(ter.id)
-                    .then(response => {
-                        context.commit(CarteTypes.ADD_POLYGON,[response.body]);
-                    })
-            }
-        },
-        [TerritoireTypes.REMOVE_COMMUNE]: (context, ter) => {
-            context.commit(CarteTypes.REMOVE_POLYGON, ter);
-        },
         [CarteTypes.SET_VARIABLE]: (context, v) => {
             context.commit(CarteTypes.SET_VARIABLE, v);
         },
@@ -45,21 +22,6 @@ export default{
         },
     },
     mutations:{
-        [CarteTypes.ADD_POLYGON]: (state, polygon) => {
-            let newGeo = {
-                    type: "FeatureCollection",
-                    features:state.polygonsList.features
-            }
-            polygon.forEach(p => {
-                newGeo.features.push(p);
-            })
-            state.polygonsList = newGeo;
-        },
-        [CarteTypes.REMOVE_POLYGON]: (state, ter) => {
-            let newGeo = Object.assign({},state.polygonsList);
-            newGeo.features = newGeo.features.filter(t => ter.id != t.id);
-            state.polygonsList = newGeo;
-        },
         [CarteTypes.SET_VARIABLE]: (state, v) => {
             state.variable = v;
             let donnees = v.donnees.sort((a, b) => {

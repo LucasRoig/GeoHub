@@ -5,12 +5,8 @@
             <div class="col-md-11">
                 {{variable.nom}}
                 <v-map v-on:l-ready="go" :style="{height: mapSize}" :bounds="bounds">
-                    <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
-                    <v-geojson-layer :geojson="geojson" :options="options"></v-geojson-layer>
-                    <!--
-                    <v-control :construct="legendControl.construct" :params="legendControl.params"></v-control>
-                    <v-control :construct="infoControl.construct" :params="infoControl.params"></v-control>
-                    <!--<v-marker :lat-lng="marker"></v-marker>-->
+                    <v-tilelayer :url="url"></v-tilelayer>
+                    <v-geojson-layer :geojson="geoJSON" :options="options"></v-geojson-layer>
                 </v-map>
             </div>
         </div>
@@ -18,7 +14,6 @@
 </template>
 <script>
     import Vue2Leaflet from 'vue2-leaflet';
-    import VControl from './control.vue';
     import sidebar from './sidebar.vue';
     import CommuneService from '../../api/communeService'
     import * as CarteTypes from '../../store/carte/carteTypes'
@@ -32,11 +27,15 @@
                 'v-geojson-layer' :Vue2Leaflet.GeoJSON,
                 'v-marker': Vue2Leaflet.Marker,
                 sidebar,
-                'v-control':VControl
               },
         data () {
             let component = this;
             return {
+                geoJSON :{
+                    type: "FeatureCollection",
+                    features:[]
+                },
+                bounds:  L.latLngBounds([51,4],[42.5,-4]),
                 options: {
                     onEachFeature:function(feature, layer) {
                         layer.on({
@@ -94,21 +93,19 @@
 
 
                 url:'https://api.mapbox.com/styles/v1/drazcro/cj2kn8xad00272rnz8g80d8ei/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZHJhemNybyIsImEiOiJjajJsbTR5ZzIwMDBpMnFvN25qZ3B5Nzh4In0._BLUaFg4dTSlYyf-zqpM4g',
-                //url:'https://api.mapbox.com/styles/v1/drazcro/cj2lp0czs000x2smtyc241wxo/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZHJhemNybyIsImEiOiJjajJsbTR5ZzIwMDBpMnFvN25qZ3B5Nzh4In0._BLUaFg4dTSlYyf-zqpM4g',
-                attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-                marker: L.latLng(47.413220, -1.219482),
-
+                
                 legendControl:L.control({position: 'bottomright'}),
 
                 infoControl:L.control({position:'topright'}),
             }
         },
         methods:{
+            /*C'est la methode qui charge les controles sur la map
+            Si ca plant il faut verifier la ligne this.$children[i].mapObject*/
             go(e){
                 let component = this;
                 let map = this.$children[1].mapObject;
                 this.legendControl.onAdd = function(map){
-                            console.log(this)
                                 var div = L.DomUtil.create('div', 'info legend'),
                                     grades = component.quintiles,
                                     labels = [],
@@ -135,7 +132,6 @@
                     return this._div;
                 };
                 this.infoControl.update = function(feature){
-                    console.log(feature)
                     if(feature){
                         let valeur;
                         if(component.variable.donnees){
@@ -151,29 +147,11 @@
                     }
                 };
                 this.infoControl.addTo(map);
-
-            }
-        },
-        computed:{
-            mapSize(){
-                console.log($(window).height());
-                return ($(window).height() - 80)+'px';
             },
-            geojson(){
-                return this.$store.getters[CarteTypes.GET_POLYGONS];
-            },
-            variable(){
-                return this.$store.getters[CarteTypes.GET_VARIABLE];
-            },
-            quintiles(){
-                return this.$store.getters[CarteTypes.GET_QUINTILES];
-            },
-            bounds(){
+            calculateBounds(){
                 let bounds = [];
-                if(this.geoJson != {}){
-                    //let geoCopy = Object.assign({},this.geojson);
-                    //console.log(geoCopy)
-                    this.geojson.features.forEach(feature => {
+                if(this.geoJSON.features.length > 0){
+                    this.geoJSON.features.forEach(feature => {
                         feature.geometry.coordinates.forEach(polygon => {
                             polygon.forEach(linearRing => {
                                 linearRing.forEach(coordonnee=>{
@@ -184,17 +162,54 @@
                     })
                 }
                 if(bounds.length == 0){
-                    return L.latLngBounds([51,4],[42.5,-4])
+                    this.bounds =  L.latLngBounds([51,4],[42.5,-4])
                 }else{
-                    return L.latLngBounds(bounds)
+                    this.bounds =  L.latLngBounds(bounds)
                 }
-            },
+            }
         },
-        beforeCreate:function () {
-            /*DatasetService.getAllDataset().then(response => {
-                this.$store.dispatch(CarteTypes.SET_VARIABLE, response.body[0].variables[0]);
-            })*/
-            
+        computed:{
+            mapSize(){
+                return ($(window).height() - 80)+'px';
+            },
+            variable(){
+                return this.$store.getters[CarteTypes.GET_VARIABLE];
+            },
+            quintiles(){
+                return this.$store.getters[CarteTypes.GET_QUINTILES];
+            },
+            territoire(){
+                return this.$store.getters[TerritoireTypes.GET_COMMUNES];
+            }
+        },
+        created:function () {
+            //Charge les polygones sur la map
+            CommuneService.getGeomOfCommuneFromList(this.territoire)
+            .then(res => {
+                this.geoJSON.features = res.body;
+                this.calculateBounds();
+            })         
         }
     }
 </script>
+<style>
+.info { 
+    padding: 6px 8px; 
+    font: 14px/16px Arial, Helvetica, sans-serif; 
+    background: white; 
+    background: rgba(255,255,255,0.8); 
+    box-shadow: 0 0 15px rgba(0,0,0,0.2); 
+    border-radius: 5px; } 
+.info h4 { margin: 0 0 5px; color: #777; }
+.legend { 
+    text-align: left; 
+    line-height: 18px; color: #555; 
+} 
+.legend i { 
+    width: 18px; 
+    height: 18px; 
+    float: left; 
+    margin-right: 8px;
+     opacity: 0.7; 
+}
+</style>

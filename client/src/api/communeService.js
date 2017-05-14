@@ -30,5 +30,11 @@ export default{
     },
     getGeomOfCommuneInDep: (depId) => {
         return Vue.http.get(baseRoute + '/geom/dep/' + depId + '/getGeomOfCommune');
+    },
+    getGeomOfCommuneFromList : (list) => {
+        if(!list){
+            list = [];
+        }
+        return Vue.http.post(baseRoute + '/geom/getCommunes',list);
     }
 }
