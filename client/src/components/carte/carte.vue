@@ -3,7 +3,11 @@
         <div class="row">
             <sidebar class="col-md-1"></sidebar>
             <div class="col-md-11">
-                {{variable.nom}}
+                <div class="row" id="head" v-if="variable.nom">
+                    <div class="col-md-12">
+                        <h1>{{ variable.nom }}</h1>
+                    </div>
+                </div>
                 <v-map v-on:l-ready="go" :style="{height: mapSize}" :bounds="bounds">
                     <v-tilelayer :url="url"></v-tilelayer>
                     <v-geojson-layer :geojson="geoJSON" :options="options"></v-geojson-layer>
@@ -171,7 +175,7 @@
         },
         computed:{
             mapSize(){
-                return ($(window).height() - 80)+'px';
+                return ($(window).height() - 100)+'px';
             },
             variable(){
                 return this.$store.getters[CarteTypes.GET_VARIABLE];
