@@ -8,7 +8,6 @@
             </div>
             <div class="col-md-10">
                 <h1>{{dataset.nom}}</h1>
-
             </div>
         </div>
         <div class="row">
@@ -39,10 +38,10 @@
                             </td>
                             <td class="col-md-2">
                                 <div class="input-group-btn">
-                                    <router-link class="btn btn-info" to="">
+                                    <router-link :to="dataset.id + '/' + v.id" class="btn btn-info">
                                         <span class ="glyphicon glyphicon-pencil"></span>
                                     </router-link>
-                                    <button class="btn btn-danger">
+                                    <button class="btn btn-danger" v-on:click='deleteVariable(v.id)'>
                                         <span class ="glyphicon glyphicon-remove"></span>
                                     </button>
                                 </div>
@@ -59,9 +58,14 @@
     import * as DatasetTypes from '../../store/dataset/datasetTypes'
     export default{
         name:'editdataset',
+        methods:{
+            deleteVariable(varid){
+                this.$store.dispatch(DatasetTypes.DELETE_VARIABLE, varid)
+            },
+        },
         computed:{
             dataset(){
-                return this.$store.getters[DatasetTypes.GET_DATASET_LIST].filter(d => d.id == this.$route.params.id)[0]
+                return this.$store.getters[DatasetTypes.GET_DATASET_LIST].find(d => d.id == this.$route.params.id)
             }
         },
         created:function(){
