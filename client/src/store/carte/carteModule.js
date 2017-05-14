@@ -13,12 +13,14 @@ export default{
         variable: {
             
         },
-        quintiles: [10, 20, 30, 40]
+        quintiles: [10, 20, 30, 40],
+        palette : ["#FFEDA0", "#FC4E2A", "#E31A1C", "#BD0026", "#800026"]
     },
     getters:{
         [CarteTypes.GET_POLYGONS]: (state) => state.polygonsList,
         [CarteTypes.GET_VARIABLE]: (state) => state.variable,
-        [CarteTypes.GET_QUINTILES]: (state) => state.quintiles
+        [CarteTypes.GET_QUINTILES]: (state) => state.quintiles,
+        [CarteTypes.GET_PALETTE]: (state) => state.palette
     },
     actions:{
         [TerritoireTypes.ADD_COMMUNE]: (context, ter) =>{
@@ -39,6 +41,9 @@ export default{
         },
         [CarteTypes.REMOVE_VARIABLE]: (context, v) => {
             context.commit(CarteTypes.REMOVE_VARIABLE, v);
+        },
+        [CarteTypes.SET_PALETTE]: (context, p) => {
+            context.commit(CarteTypes.SET_PALETTE, p);
         },
     },
     mutations:{
@@ -67,6 +72,10 @@ export default{
         },
         [CarteTypes.REMOVE_VARIABLE]: (state, v) => {
             state.variable = {};
+        },
+        [CarteTypes.SET_PALETTE]: (state, p) => {
+          state.palette = p;
+          
         },
     }
 }

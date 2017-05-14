@@ -74,11 +74,11 @@
                             let donnee = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0];
                             if(donnee){
                                 let val = donnee.valeur;
-                                couleur = val > component.quintiles[3] ? '#800026':
-                                        val > component.quintiles[2] ? '#BD0026':
-                                        val > component.quintiles[1] ? '#E31A1C':
-                                        val > component.quintiles[0] ? '#FC4E2A':
-                                                                        '#FFEDA0';
+                                couleur = val > component.quintiles[3] ? component.palette[4]:
+                                          val > component.quintiles[2] ? component.palette[3]:
+                                          val > component.quintiles[1] ? component.palette[2]:
+                                          val > component.quintiles[0] ? component.palette[1]:
+                                                                         component.palette[0];
                             }
                         };
                         return {
@@ -111,17 +111,18 @@
                             console.log(this)
                                 var div = L.DomUtil.create('div', 'info legend'),
                                     grades = component.quintiles,
+                                    colors = component.palette,
                                     labels = [],
                                     from, to;
                                 labels.push(
-                                        '<i style="background:' + 'red;' + '"></i> ' +
+                                        '<i style="background:' + colors[0] + '"></i> ' +
                                         0 + '&ndash;' + grades[0]);
                                 for (var i = 0; i < grades.length; i++) {
                                     from = grades[i];
                                     to = grades[i + 1];
 
                                     labels.push(
-                                        '<i style="background:' + 'red;' + '"></i> ' +
+                                        '<i style="background:' + colors[i+1] + '"></i> ' +
                                         from + (to ? '&ndash;' + to : '+'));
                                 }
                                 div.innerHTML = labels.join('<br>');
@@ -167,6 +168,9 @@
             },
             quintiles(){
                 return this.$store.getters[CarteTypes.GET_QUINTILES];
+            },
+            palette(){
+                return this.$store.getters[CarteTypes.GET_PALETTE];
             },
             bounds(){
                 let bounds = [];
