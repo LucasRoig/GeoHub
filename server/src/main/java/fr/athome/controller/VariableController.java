@@ -1,0 +1,56 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package fr.athome.controller;
+
+import fr.athome.domain.entities.Variable;
+import fr.athome.domain.repositories.VariableRepository;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
+/**
+ *
+ * @author Lucas
+ */
+@RestController
+@RequestMapping("/api/variable")
+public class VariableController {
+    
+    @Autowired
+    VariableRepository variableRepository;
+    
+    @RequestMapping(method = GET)
+    public List<Variable> list() {
+        return variableRepository.findAll();
+    }
+    
+    @RequestMapping(value = "/{id}", method = GET)
+    public Variable get(@PathVariable Long id) {
+        return variableRepository.findOne(id);
+    }
+    
+    @RequestMapping(value = "/{id}", method = PUT)
+    public Variable put(@PathVariable Long id, @RequestBody Variable input) {
+        input.setId(id);
+        return variableRepository.save(input);
+    }
+    
+    @RequestMapping(value = "/{id}", method = DELETE)
+    public Long delete(@PathVariable Long id) {
+        variableRepository.delete(id);
+        return id;
+    }
+    
+}
