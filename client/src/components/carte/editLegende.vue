@@ -69,6 +69,7 @@
             },
             selectPalette(p) {
                 this.$store.dispatch(CarteTypes.SET_PALETTE, p);
+                this.$emit('s-change-palette',p);
             },
             getMaxValue() {
                 var donnees = this.variable.donnees;
@@ -146,6 +147,7 @@
             slider.noUiSlider.on('change', function() {
                 var nq = component.getNewQuintiles();
                 component.setQuintiles(nq);
+                component.$emit('s-change');
             });
         },
     }
