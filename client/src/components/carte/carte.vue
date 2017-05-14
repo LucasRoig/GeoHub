@@ -24,6 +24,7 @@
     import CommuneService from '../../api/communeService'
     import * as CarteTypes from '../../store/carte/carteTypes'
     import * as TerritoireTypes from '../../store/carte/territoireTypes'
+    import * as GlobalTypes from '../../store/globalTypes'
     import DatasetService from '../../api/datasetService'
     export default{
         name:'carte',
@@ -156,6 +157,7 @@
                     }
                 };
                 this.infoControl.addTo(map);
+               // this.$store.dispatch(GlobalTypes.SET_LOADING,false);
             },
             calculateBounds(){
                 let bounds = [];
@@ -230,10 +232,12 @@
         },
         created:function () {
             //Charge les polygones sur la map
+            this.$store.dispatch(GlobalTypes.SET_LOADING,true);
             CommuneService.getGeomOfCommuneFromList(this.territoire)
             .then(res => {
                 this.geoJSON.features = res.body;
                 this.calculateBounds();
+                this.$store.dispatch(GlobalTypes.SET_LOADING,false);
             })         
         }
     }
