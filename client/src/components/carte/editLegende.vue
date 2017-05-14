@@ -1,43 +1,27 @@
 <template>
-    <div class="container-fluid">
-        <div class="row" id="head">
+    <div class="container-fluid" id="legende">
+        <div class="row">
             <div class="col-md-2">
-                <router-link to="/carte" class="btn btn-default btn-lg">
-                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                    Retour carte
-                </router-link>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Palettes de couleurs
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li v-for="p in [palette1, palette2, palette3, palette4]">
+                            <div v-on:click="selectPalette(p)" class="progress">
+                                <div v-for="c in p" class="progress-bar" :style="'width: 20%; background:'+c+''">
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="col-md-10">
-                <h1>Editer la légende</h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="row">
-                <div class="col-md-10 col-md-offset-1">
-                    <div id="slider">
+                <div id="slider">
 
-                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-offset-1">
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            Palettes de couleurs
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                            <li v-for="p in [palette1, palette2, palette3, palette4]">
-                                <div v-on:click="selectPalette(p)" class="progress">
-                                    <div v-for="c in p" class="progress-bar" :style="'width: 20%; background:'+c+''">
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </template>
@@ -90,11 +74,15 @@
                 var max = this.getMaxValue();
                 if(!(max >= 0))
                     max = this.quintiles[3];
+                var format = {
+                    to: v => parseInt(v),
+                    from: v => parseInt(v)
+                };
                 noUiSlider.create(slider, {
                     start: this.quintiles,
                     step: 1,
                     connect: [true, true, true, true, true],
-                    tooltips: [true, true, true, true],
+                    tooltips: [format, format, format, format],
                     range: {
                         'min':  0,
                         '20%': this.quintiles[0],
@@ -158,27 +146,23 @@
     }
 
     #slider {
-        height: 50px;
-        margin-top: 5rem;
+        margin-top: 3rem;
     }
 
     .dropdown {
         margin-top: 2rem;
     }
 
-    .c-1-color {
-        background: red;
+    #legende {
+        margin-bottom: 2rem;
     }
-    .c-2-color {
-        background: red;
+
+    .dropdown-menu {
+        padding: 0;
+        z-index: 10000;
     }
-    .c-3-color {
-        background: red;
-    }
-    .c-4-color {
-        background: red;
-    }
-    .c-5-color {
-        background: red;
+
+    .progress {
+        margin: 0;
     }
 </style>

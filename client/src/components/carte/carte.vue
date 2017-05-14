@@ -1,14 +1,14 @@
 <template>
 <div class="container-fluid">
         <div class="row">
-            <sidebar class="col-md-1"></sidebar>
+            <sidebar class="col-md-1" v-on:s-edit="modifShow(show == 'legende'? '' : 'legende')"></sidebar>
             <div class="col-md-11">
                 <div class="row" id="head" v-if="variable.nom">
                     <div class="col-md-12">
                         <h1>{{ variable.nom }}</h1>
                     </div>
                 </div>
-                <editLegende v-on:s-change="updateLegende" v-on:s-change-palette="updatePalette"></editLegende>
+                <editLegende v-if="show == 'legende'" v-on:s-change="updateLegende" v-on:s-change-palette="updatePalette"></editLegende>
                 <v-map v-on:l-ready="go" :style="{height: mapSize}" :bounds="bounds">
                     <v-tilelayer :url="url"></v-tilelayer>
                     <v-geojson-layer :geojson="geoJSON" :options="options"></v-geojson-layer>
@@ -38,9 +38,10 @@
         data () {
             let component = this;
             return {
+                show: "",
                 geoJSON :{
                     type: "FeatureCollection",
-                    features:[]
+                    features:[],
                 },
                 bounds:  L.latLngBounds([51,4],[42.5,-4]),
                 options: {
@@ -111,7 +112,7 @@
             Si ca plante il faut verifier la ligne this.$children[i].mapObject*/
             go(e){
                 let component = this;
-                this.map = this.$children[2].mapObject;
+                this.map = this.$children[1].mapObject;
                 let map = this.map
                 console.log(this.map);
                 this.legendControl.onAdd = function(map){
@@ -191,6 +192,13 @@
                     if(this.map._layers[layer].resetStyle)
                         this.map._layers[layer].resetStyle();
                 }
+            },
+            modifShow(v) {
+                console.log(v);
+                this.show = v;
+            },
+            getShow() {
+                return this.show;
             }
         },
         computed:{
@@ -221,23 +229,26 @@
     }
 </script>
 <style>
-.info { 
-    padding: 6px 8px; 
-    font: 14px/16px Arial, Helvetica, sans-serif; 
-    background: white; 
-    background: rgba(255,255,255,0.8); 
-    box-shadow: 0 0 15px rgba(0,0,0,0.2); 
-    border-radius: 5px; } 
-.info h4 { margin: 0 0 5px; color: #777; }
-.legend { 
-    text-align: left; 
-    line-height: 18px; color: #555; 
-} 
-.legend i { 
-    width: 18px; 
-    height: 18px; 
-    float: left; 
-    margin-right: 8px;
-     opacity: 0.7; 
-}
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255,255,255,0.8);
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        border-radius: 5px; }
+
+    .info h4 { margin: 0 0 5px; color: #777; }
+
+    .legend {
+        text-align: left;
+        line-height: 18px; color: #555;
+    }
+
+    .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+         opacity: 0.7;
+    }
 </style>
