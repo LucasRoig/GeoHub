@@ -10,7 +10,7 @@
                 <h1>{{variable.nom}}</h1>
             </div>
             <div class="col-md-2">
-                <!-- //Tentive de modification du nom la variable//
+                <!-- //Tentative de modification du nom la variable//
                 <div class="dropdown pull-right">
                     <button class="btn btn-default dropdown-toggle" type="button" id="renommer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         Modifier le nom
