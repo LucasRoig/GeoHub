@@ -5,37 +5,17 @@ import * as CarteTypes from './carteTypes'
 import * as TerritoireTypes from './territoireTypes'
 import CommuneService from '../../api/communeService'
 export default{
-    state:{
-        polygonsList: {
-            type: "FeatureCollection",
-            features:[]
-        },
-        variable: {
-            
-        },
-        quintiles: [10, 20, 30, 40],
-        palette : ["#FFEDA0", "#FC4E2A", "#E31A1C", "#BD0026", "#800026"]
+    state:{      
+        palette : ["#FFEDA0", "#FC4E2A", "#E31A1C", "#BD0026", "#800026"],
+        variable: { },
+        quintiles: [10, 20, 30, 40]
     },
     getters:{
-        [CarteTypes.GET_POLYGONS]: (state) => state.polygonsList,
         [CarteTypes.GET_VARIABLE]: (state) => state.variable,
         [CarteTypes.GET_QUINTILES]: (state) => state.quintiles,
         [CarteTypes.GET_PALETTE]: (state) => state.palette
     },
     actions:{
-        [TerritoireTypes.ADD_COMMUNE]: (context, ter) =>{
-            if(ter.type == 'DEP'){
-
-            }else{
-                CommuneService.getGeom(ter.id)
-                    .then(response => {
-                        context.commit(CarteTypes.ADD_POLYGON,response.body);
-                    })
-            }
-        },
-        [TerritoireTypes.REMOVE_COMMUNE]: (context, ter) => {
-            context.commit(CarteTypes.REMOVE_POLYGON, ter);
-        },
         [CarteTypes.SET_VARIABLE]: (context, v) => {
             context.commit(CarteTypes.SET_VARIABLE, v);
         },
@@ -47,16 +27,6 @@ export default{
         },
     },
     mutations:{
-        [CarteTypes.ADD_POLYGON]: (state, polygon) => {
-            let newGeo = Object.assign({},state.polygonsList);
-            newGeo.features.push(polygon);
-            state.polygonsList = newGeo;
-        },
-        [CarteTypes.REMOVE_POLYGON]: (state, ter) => {
-            let newGeo = Object.assign({},state.polygonsList);
-            newGeo.features = newGeo.features.filter(t => ter.id != t.id);
-            state.polygonsList = newGeo;
-        },
         [CarteTypes.SET_VARIABLE]: (state, v) => {
             state.variable = v;
             let donnees = v.donnees.sort((a, b) => {
@@ -75,7 +45,6 @@ export default{
         },
         [CarteTypes.SET_PALETTE]: (state, p) => {
           state.palette = p;
-          
         },
     }
 }
