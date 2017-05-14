@@ -14,6 +14,7 @@ import Dataset from './components/dataset/dataset.vue'
 import ImportVariables from './components/dataset/import.vue'
 import AjoutDataset from './components/dataset/ajout.vue'
 import EditDataset from './components/dataset/editdataset.vue'
+import EditVariable from './components/dataset/editvariable.vue'
 import TerritoireForm from './components/carte/territoire.vue'
 import SelectionVariables from './components/carte/selectionVariables.vue'
 import EditLegende from './components/carte/editLegende.vue'
@@ -33,6 +34,7 @@ export const router = new VueRouter({
     {path: '/dataset/ajouter', component: AjoutDataset},
     {path: '/dataset/:id/importVariables', component: ImportVariables},
     {path: '/dataset/:id', component:EditDataset},
+    {path: '/dataset/:datasetid/:variableid', component: EditVariable},
     {path: '/carte/territoire', component: TerritoireForm},
     {path: '/carte/selection-variables', component: SelectionVariables},
     {path: '/carte/editLegende', component: EditLegende},
