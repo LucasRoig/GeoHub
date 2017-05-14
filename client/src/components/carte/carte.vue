@@ -135,15 +135,20 @@
                     return this._div;
                 };
                 this.infoControl.update = function(feature){
-                    let valeur;
-                    if(component.variable.donnees && feature){
-                            let donnee = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0];
-                            if(donnee){
-                                valeur = donnee.valeur;
-                            }
+                    console.log(feature)
+                    if(feature){
+                        let valeur;
+                        if(component.variable.donnees){
+                                let donnee = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0];
+                                if(donnee){
+                                    valeur = donnee.valeur;
+                                }
+                        }
+                        this._div.innerHTML = '<h4>'+feature.properties.nom +'</h4>' +  (component.variable.nom ?
+                            '<b>' + component.variable.nom + '</b>'+ ':' + valeur:'') + '<br>';
+                    }else{
+                        this._div.innerHTML = ''
                     }
-                    this._div.innerHTML = '<h4>'+component.variable.nom +'</h4>' +  (feature ?
-                        '<b>' + feature.properties.nom + '</b>'+ ':' + valeur:'Hover over a state') + '<br>';
                 };
                 this.infoControl.addTo(map);
 

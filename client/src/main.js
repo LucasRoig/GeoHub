@@ -15,6 +15,7 @@ import ImportVariables from './components/dataset/import.vue'
 import AjoutDataset from './components/dataset/ajout.vue'
 import EditDataset from './components/dataset/editdataset.vue'
 import TerritoireForm from './components/carte/territoire.vue'
+import TerritoireForm2 from './components/carte/territoire2.vue'
 import SelectionVariables from './components/carte/selectionVariables.vue'
 
 Vue.use(VueRouter);
@@ -28,7 +29,7 @@ export const router = new VueRouter({
     {path: '/connexion', component:Connexion},
     {path: '/inscription', component:Inscription},
     {path: '/dataset', component:Dataset},
-    {path: '/carte/territoire', component: TerritoireForm},
+    {path: '/carte/territoire', component: TerritoireForm2},
     {path: '/dataset/ajouter', component: AjoutDataset},
     {path: '/dataset/:id/importVariables', component: ImportVariables},
     {path: '/dataset/:id', component:EditDataset},
