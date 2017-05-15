@@ -1,16 +1,17 @@
 <template>
 <div class="container-fluid">
         <div class="row">
-            <sidebar class="col-md-1"></sidebar>
+            <sidebar style="padding-top:150px;" class="col-md-1" v-on:s-center="map.flyToBounds(bounds)" v-on:s-edit="modifShow(show == 'legende'? '' : 'legende')"></sidebar>
             <div class="col-md-11">
-                {{variable.nom}}
+                <div class="row" id="head" v-if="variable.nom">
+                    <div class="col-md-12">
+                        <h1>{{ variable.nom }}</h1>
+                    </div>
+                </div>
+                <editLegende v-if="show == 'legende'" v-on:s-change="updateLegende" v-on:s-change-palette="updatePalette"></editLegende>
                 <v-map v-on:l-ready="go" :style="{height: mapSize}" :bounds="bounds">
-                    <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
-                    <v-geojson-layer :geojson="geojson" :options="options"></v-geojson-layer>
-                    <!--
-                    <v-control :construct="legendControl.construct" :params="legendControl.params"></v-control>
-                    <v-control :construct="infoControl.construct" :params="infoControl.params"></v-control>
-                    <!--<v-marker :lat-lng="marker"></v-marker>-->
+                    <v-tilelayer :url="url"></v-tilelayer>
+                    <v-geojson-layer :geojson="geoJSON" :options="options"></v-geojson-layer>
                 </v-map>
             </div>
         </div>
@@ -18,11 +19,12 @@
 </template>
 <script>
     import Vue2Leaflet from 'vue2-leaflet';
-    import VControl from './control.vue';
     import sidebar from './sidebar.vue';
+    import editLegende from './editLegende.vue';
     import CommuneService from '../../api/communeService'
     import * as CarteTypes from '../../store/carte/carteTypes'
     import * as TerritoireTypes from '../../store/carte/territoireTypes'
+    import * as GlobalTypes from '../../store/globalTypes'
     import DatasetService from '../../api/datasetService'
     export default{
         name:'carte',
@@ -32,11 +34,17 @@
                 'v-geojson-layer' :Vue2Leaflet.GeoJSON,
                 'v-marker': Vue2Leaflet.Marker,
                 sidebar,
-                'v-control':VControl
+                editLegende,
               },
         data () {
             let component = this;
             return {
+                show: "",
+                geoJSON :{
+                    type: "FeatureCollection",
+                    features:[],
+                },
+                bounds:  L.latLngBounds([51,4],[42.5,-4]),
                 options: {
                     onEachFeature:function(feature, layer) {
                         layer.on({
@@ -74,11 +82,22 @@
                             let donnee = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0];
                             if(donnee){
                                 let val = donnee.valeur;
-                                couleur = val > component.quintiles[3] ? '#800026':
-                                        val > component.quintiles[2] ? '#BD0026':
-                                        val > component.quintiles[1] ? '#E31A1C':
-                                        val > component.quintiles[0] ? '#FC4E2A':
-                                                                        '#FFEDA0';
+                                if(component.typePourcentage && component.varRefPourcentage.donnees){
+                                    let ref = component.varRefPourcentage.donnees.find(d => parseInt(d.codeGeo) == feature.id)
+                                    if(ref){
+                                        val = (val/ref.valeur) * 100;
+                                    }else{
+                                        val = -1
+                                    }
+                                }
+                                feature.valeur = val;
+                                if(val >= 0){
+                                    couleur = val > component.quintiles[3] ? component.palette[4]:
+                                            val > component.quintiles[2] ? component.palette[3]:
+                                            val > component.quintiles[1] ? component.palette[2]:
+                                            val > component.quintiles[0] ? component.palette[1]:
+                                                                            component.palette[0];
+                                }   
                             }
                         };
                         return {
@@ -94,39 +113,36 @@
 
 
                 url:'https://api.mapbox.com/styles/v1/drazcro/cj2kn8xad00272rnz8g80d8ei/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZHJhemNybyIsImEiOiJjajJsbTR5ZzIwMDBpMnFvN25qZ3B5Nzh4In0._BLUaFg4dTSlYyf-zqpM4g',
-                //url:'https://api.mapbox.com/styles/v1/drazcro/cj2lp0czs000x2smtyc241wxo/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZHJhemNybyIsImEiOiJjajJsbTR5ZzIwMDBpMnFvN25qZ3B5Nzh4In0._BLUaFg4dTSlYyf-zqpM4g',
-                attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-                marker: L.latLng(47.413220, -1.219482),
-
+                
                 legendControl:L.control({position: 'bottomright'}),
 
                 infoControl:L.control({position:'topright'}),
             }
         },
         methods:{
+            /*C'est la methode qui charge les controles sur la map
+            Si ca plante il faut verifier la ligne this.$children[i].mapObject*/
             go(e){
                 let component = this;
-                let map = this.$children[1].mapObject;
+                this.map = this.$children[1].mapObject;
+                this.geoJsonLayer = this.$children[1].$children[1].$geoJSON;
+                let map = this.map
                 this.legendControl.onAdd = function(map){
-                            console.log(this)
-                                var div = L.DomUtil.create('div', 'info legend'),
-                                    grades = component.quintiles,
-                                    labels = [],
-                                    from, to;
-                                labels.push(
-                                        '<i style="background:' + 'red;' + '"></i> ' +
-                                        0 + '&ndash;' + grades[0]);
-                                for (var i = 0; i < grades.length; i++) {
-                                    from = grades[i];
-                                    to = grades[i + 1];
-
-                                    labels.push(
-                                        '<i style="background:' + 'red;' + '"></i> ' +
-                                        from + (to ? '&ndash;' + to : '+'));
-                                }
-                                div.innerHTML = labels.join('<br>');
-                                return div;
-                        },
+                    this._div = L.DomUtil.create('div', 'info legend');
+                    this.update(component.quintiles,component.palette);
+                    return this._div;
+                };
+                this.legendControl.update = function(grades,colors){
+                    let labels = [],
+                        from, to;;
+                    labels.push('<i style="background:' + colors[0] + '"></i> ' + 0 + '&ndash;' + grades[0]);
+                    for (var i = 0; i < grades.length; i++) {
+                        from = grades[i];
+                        to = grades[i + 1];
+                        labels.push('<i style="background:' + colors[i+1] + '"></i> ' + from + (to ? '&ndash;' + to : '+'));
+                    }
+                    this._div.innerHTML = labels.join('<br>');
+                }
                 this.legendControl.addTo(map);
                 //Info
                 this.infoControl.onAdd = function (map) {
@@ -135,40 +151,21 @@
                     return this._div;
                 };
                 this.infoControl.update = function(feature){
-                    let valeur;
-                    if(component.variable.donnees && feature){
-                            let donnee = component.variable.donnees.filter(e => parseInt(e.codeGeo) == feature.id)[0];
-                            if(donnee){
-                                valeur = donnee.valeur;
-                            }
+                    if(feature){
+                        let valeur = feature.valeur;
+                        this._div.innerHTML = '<h4>'+feature.properties.nom +'</h4>' +  (component.variable.nom ?
+                            '<b>' + component.variable.nom + '</b>'+ ':' + valeur:'') + '<br>';
+                    }else{
+                        this._div.innerHTML = ''
                     }
-                    this._div.innerHTML = '<h4>'+component.variable.nom +'</h4>' +  (feature ?
-                        '<b>' + feature.properties.nom + '</b>'+ ':' + valeur:'Hover over a state') + '<br>';
                 };
                 this.infoControl.addTo(map);
-
-            }
-        },
-        computed:{
-            mapSize(){
-                console.log($(window).height());
-                return ($(window).height() - 80)+'px';
+               // this.$store.dispatch(GlobalTypes.SET_LOADING,false);
             },
-            geojson(){
-                return this.$store.getters[CarteTypes.GET_POLYGONS];
-            },
-            variable(){
-                return this.$store.getters[CarteTypes.GET_VARIABLE];
-            },
-            quintiles(){
-                return this.$store.getters[CarteTypes.GET_QUINTILES];
-            },
-            bounds(){
+            calculateBounds(){
                 let bounds = [];
-                if(this.geoJson != {}){
-                    //let geoCopy = Object.assign({},this.geojson);
-                    //console.log(geoCopy)
-                    this.geojson.features.forEach(feature => {
+                if(this.geoJSON.features.length > 0){
+                    this.geoJSON.features.forEach(feature => {
                         feature.geometry.coordinates.forEach(polygon => {
                             polygon.forEach(linearRing => {
                                 linearRing.forEach(coordonnee=>{
@@ -179,17 +176,101 @@
                     })
                 }
                 if(bounds.length == 0){
-                    return L.latLngBounds([51,4],[42.5,-4])
+                    this.bounds =  L.latLngBounds([51,4],[42.5,-4])
                 }else{
-                    return L.latLngBounds(bounds)
+                    this.bounds =  L.latLngBounds(bounds)
                 }
             },
+            updateLegende() {
+                this.legendControl.update(this.quintiles,this.palette)
+                this.geoJsonLayer.eachLayer(layer => {
+                    this.geoJsonLayer.resetStyle(layer)
+                })
+                /*for(var layer in this.map._layers){
+                    console.log(layer)
+                    this.map._layers[layer].resetStyle();
+                    if(this.map._layers[layer].resetStyle)
+                        this.map._layers[layer].resetStyle();
+                }*/
+            },
+            updatePalette(palette){
+                this.legendControl.update(this.quintiles,palette)
+                this.geoJsonLayer.eachLayer(layer => {
+                    this.geoJsonLayer.resetStyle(layer)
+                })
+                /*console.log(this.map._layers)
+                for(var layer in this.map._layers){
+                    console.log(this.map._layers[layer])
+                    if(this.map._layers[layer].resetStyle)
+                        this.map._layers[layer].resetStyle();
+                }*/
+            },
+            modifShow(v) {
+                this.show = v;
+            },
+            getShow() {
+                return this.show;
+            }
         },
-        beforeCreate:function () {
-            /*DatasetService.getAllDataset().then(response => {
-                this.$store.dispatch(CarteTypes.SET_VARIABLE, response.body[0].variables[0]);
-            })*/
-            
+        computed:{
+            varRefPourcentage(){
+                return this.$store.getters[CarteTypes.GET_REFERENCE_POURCENTAGE];
+            },
+            typePourcentage(){
+                //true si l'on veut afficher les pourcentages
+                return this.$store.getters[CarteTypes.GET_POURCENTAGE];
+            },
+            mapSize(){
+                if(this.show == 'legende')
+                    return ($(window).height() - 215)+'px';
+                else return ($(window).height() - 140)+'px';
+            },
+            variable(){
+                return this.$store.getters[CarteTypes.GET_VARIABLE];
+            },
+            quintiles(){
+                return this.$store.getters[CarteTypes.GET_QUINTILES];
+            },
+            territoire(){
+                return this.$store.getters[TerritoireTypes.GET_COMMUNES];
+            },
+            palette(){
+                return this.$store.getters[CarteTypes.GET_PALETTE];
+            }
+        },
+        created:function () {
+            //Charge les polygones sur la map
+            this.$store.dispatch(GlobalTypes.SET_LOADING,true);
+            CommuneService.getGeomOfCommuneFromList(this.territoire)
+            .then(res => {
+                this.geoJSON.features = res.body;
+                this.calculateBounds();
+                this.$store.dispatch(GlobalTypes.SET_LOADING,false);
+            })         
         }
     }
 </script>
+<style>
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255,255,255,0.8);
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        border-radius: 5px; }
+
+    .info h4 { margin: 0 0 5px; color: #777; }
+
+    .legend {
+        text-align: left;
+        line-height: 18px; color: #555;
+    }
+
+    .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+         opacity: 0.7;
+    }
+</style>

@@ -11,7 +11,7 @@ export default {
     getters:{
         [DatasetTypes.GET_DATASET_LIST]: state =>{
             return state.datasetList;
-        }
+        },
     },
     actions:{
         [DatasetTypes.FETCH_DATASET]: context =>{
@@ -25,11 +25,25 @@ export default {
             .then(response => {
                 context.dispatch(DatasetTypes.FETCH_DATASET);
             })
-        } 
+        },
+        [DatasetTypes.DELETE_VARIABLE]:(context,variableid) =>{
+            console.log(variableid),
+            DatasetService.deleteVariable(variableid)
+            .then(response => {
+                context.dispatch(DatasetTypes.FETCH_DATASET);
+            })
+        },
+        [DatasetTypes.DELETE_DONNEE]:(context,donneeid) =>{
+            console.log(donneeid),
+            DatasetService.deleteDonnee(donneeid)
+            .then(response => {
+                context.dispatch(DatasetTypes.FETCH_DATASET);
+            })
+        }
     },
     mutations:{
         [DatasetTypes.SET_DATASET_LIST]:(state,list) => {
             state.datasetList = list;
-        }
+        },
     }
 }

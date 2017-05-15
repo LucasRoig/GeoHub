@@ -3,6 +3,7 @@ import Vue from 'vue';
 
 import * as DatasetTypes from './datasetTypes'
 import * as CreateDatasetFormTypes from './createDatasetFormTypes'
+import * as GlobalTypes from '../globalTypes'
 import DatasetService from '../../api/datasetService'
 
 export default{
@@ -11,6 +12,7 @@ export default{
             DatasetService.createDataset(dataset)
             .then(response => {
                 context.dispatch(DatasetTypes.FETCH_DATASET)
+                context.dispatch(GlobalTypes.NAVIGATE,{path:'/dataset'})
             })
         }
     }
