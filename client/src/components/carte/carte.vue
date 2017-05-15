@@ -8,6 +8,11 @@
                         <h1>{{ variable.nom }}</h1>
                     </div>
                 </div>
+                <div class="row" id="head" v-else>
+                    <div class="col-md-12">
+                        <h1>Selectionnez des données à afficher</h1>
+                    </div>
+                </div>
                 <editLegende v-if="show == 'legende'" v-on:s-change="updateLegende" v-on:s-change-palette="updatePalette"></editLegende>
                 <v-map v-on:l-ready="go" :style="{height: mapSize}" :bounds="bounds">
                     <v-tilelayer :url="url"></v-tilelayer>
@@ -152,7 +157,7 @@
                 };
                 this.infoControl.update = function(feature){
                     if(feature){
-                        let valeur = feature.valeur;
+                        let valeur = feature.valeur.toFixed(2);
                         this._div.innerHTML = '<h4>'+feature.properties.nom +'</h4>' +  (component.variable.nom ?
                             '<b>' + component.variable.nom + '</b>'+ ':' + valeur:'') + '<br>';
                     }else{

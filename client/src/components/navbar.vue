@@ -14,7 +14,7 @@
             <li><router-link to='/carte' class="nav-link">Carte</router-link></li>
             <li><router-link to='/graphique' class="nav-link">Graphique</router-link></li>
             <li><router-link to='/dataset'>Datasets</router-link></li>
-            <li><router-link to='/connexion'>Connexion</router-link></li>
+            <!--<li><router-link to='/connexion'>Connexion</router-link></li>-->
           </ul>
         </div>
     </nav>

@@ -1,7 +1,15 @@
 <template>
-    <div class="container">
-        <div class="row"  id="head">
-            <h1>Ajouter un dataset</h1>
+    <div class="container-fluid">
+        <div class="row" id="head">
+            <div class="col-md-2">
+                <router-link to="/carte" class="btn btn-default btn-lg">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    Retour
+                </router-link>
+            </div>
+            <div class="col-md-10">
+                <h1>Ajouter un dataset</h1>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
