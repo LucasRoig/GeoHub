@@ -61,13 +61,20 @@
                     showLine:false,
                     scales: {
                         yAxes: [{
+                            type: 'logarithmic',
                             ticks: {
                                 beginAtZero:true
+                            },
+                            gridLines: {
+                                display:false
                             }
                         }],
                         xAxes: [{
-                            type: 'linear',
-                            position: 'bottom'
+                            type: 'logarithmic',
+                            position: 'bottom',
+                            gridLines: {
+                                display:false
+                            }
                         }]
                     }
                 },
@@ -133,7 +140,7 @@
                 }
             },
             updateChart(){
-                this.dataObject.datasets[0].label = "X : " + this.selectedVariableX.nom + " Y : " + this.selectedVariableY.nom
+                this.dataObject.datasets[0].label = this.selectedVariableY.nom
                 this.territoire.forEach(t => {
                     if(t.type == "COM"){
                         this.addCommuneToChart(t);
