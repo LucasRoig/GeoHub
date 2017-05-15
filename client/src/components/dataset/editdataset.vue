@@ -42,7 +42,7 @@
                                     <router-link :to="dataset.id + '/' + v.id" class="btn btn-info">
                                         <span class ="glyphicon glyphicon-pencil"></span>
                                     </router-link>
-                                    <button class="btn btn-danger" v-on:click='deleteVariable(v.id)'>
+                                    <button class="btn btn-danger" v-on:click='showModal(v.id)'>
                                         <span class ="glyphicon glyphicon-remove"></span>
                                     </button>
                                 </div>
@@ -50,7 +50,24 @@
                         </tr>
                     </tbody>
                 </table>
-
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h2 class="modal-title" id="myModalLabel">Confirmez votre choix</h2>
+                            </div>
+                            <div class="modal-body">
+                                Etes-vous sûr de voloir supprimer la variable ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                                <button type="button" class="btn btn-danger" v-on:click='deleteVariable(id)'>Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -59,9 +76,19 @@
     import * as DatasetTypes from '../../store/dataset/datasetTypes'
     export default{
         name:'editdataset',
+        data() {
+            return {
+                id: 0,
+            }
+        },
         methods:{
             deleteVariable(varid){
-                this.$store.dispatch(DatasetTypes.DELETE_VARIABLE, varid)
+                this.$store.dispatch(DatasetTypes.DELETE_VARIABLE, varid);
+                $('#myModal').modal('hide');
+            },
+            showModal(i) {
+                this.id = i;
+                $('#myModal').modal('show');
             },
         },
         computed:{
