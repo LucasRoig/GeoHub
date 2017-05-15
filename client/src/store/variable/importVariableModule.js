@@ -2,6 +2,7 @@ import Vuex from 'vuex';
 import Vue from 'vue';
 
 import * as ImportVariableTypes from './importVariableTypes'
+import * as GlobalTypes from '../globalTypes'
 import DatasetService from '../../api/datasetService'
 import CsvParser from '../../util/csvParser'
 
@@ -25,7 +26,10 @@ export default{
                 DatasetService.createMultipleVariable(variables, params.datasetId).then(response => {console.log("c'est fini")})
                 console.log('SENDING')
                 context.commit(ImportVariableTypes.SET_SENDING,true);
+				context.dispatch(GlobalTypes.SET_LOADING, false);
+				context.dispatch(GlobalTypes.NAVIGATE,{path:'/dataset/'});
             }
+			context.dispatch(GlobalTypes.SET_LOADING, true);
             reader.readAsText(params.file);
         },
         [ImportVariableTypes.SEND_TO_SERVER]: (context, datasetId) => {

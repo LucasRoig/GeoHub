@@ -52,7 +52,7 @@
                             <h2 class="modal-title" id="myModalLabel">Confirmez votre choix</h2>
                         </div>
                         <div class="modal-body">
-                            Etes-vous sûr de voloir supprimer le dataset ?
+                            Etes-vous sûr de vouloir supprimer le dataset ?
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>

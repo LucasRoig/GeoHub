@@ -18,7 +18,7 @@
                             :on-search="search"
                             :options="options"
                             v-model="selected"
-                            placeholder="Chercher une commune"
+                            placeholder="Chercher un territoire"
                             label="nom"
                     >
                     </v-select>

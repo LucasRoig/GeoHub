@@ -10,7 +10,7 @@
                 </div>
                 <div class="row" id="head" v-else>
                     <div class="col-md-12">
-                        <h1>Selectionnez des données à afficher</h1>
+                        <h1>Aucune variable n'est sélectionnée</h1>
                     </div>
                 </div>
                 <editLegende v-if="show == 'legende'" v-on:s-change="updateLegende" v-on:s-change-palette="updatePalette"></editLegende>
