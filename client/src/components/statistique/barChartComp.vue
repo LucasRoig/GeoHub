@@ -16,7 +16,7 @@
                         label="nom"
                     ></v-select>
                 </div>
-            <bar-chart :dataObject="dataObject" :options="options" style="width: 512px; height: 256px"></bar-chart>
+            <bar-chart :dataObject="dataObject" :options="options"></bar-chart>
     </div>
 </template>
 <script>
@@ -33,7 +33,7 @@ export default{
     },
     data(){
         return{
-            options:{},
+            options:{maintainAspectRatio: false,},
             dataObject:{
                 labels:[],
                 datasets:[{
@@ -41,7 +41,6 @@ export default{
                     data:[],
                     borderWidth:1,
                 }],
-
             },
             selectedDataset:null,
             selectedVariable:null

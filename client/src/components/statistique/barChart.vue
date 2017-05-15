@@ -1,5 +1,5 @@
 <template>
-    <canvas>{{dataObject}}</canvas>
+    <canvas height="350">{{dataObject}}</canvas>
 </template>
 <script>
     import Chart from 'chart.js'
