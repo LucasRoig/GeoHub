@@ -54,6 +54,9 @@ h2{
 h4{
   font-size: 1.5em;
 }
+.dropdown{
+  margin: 0 !important;
+}
 
 #app {
 

@@ -3,6 +3,7 @@
         <div class="row" id="head">
             <div class="col-md-2">
                 <router-link to="/dataset" class="btn btn-default btn-lg">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                     Retour
                 </router-link>
             </div>

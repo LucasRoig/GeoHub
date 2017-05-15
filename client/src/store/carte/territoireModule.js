@@ -12,7 +12,8 @@ export default{
     },
     actions:{
         [TerritoireTypes.ADD_COMMUNE]: (context, ter) =>{
-            context.commit(TerritoireTypes.ADD_COMMUNE,ter)
+            if(!context.state.territoire.find(t => t.id == ter.id))
+                context.commit(TerritoireTypes.ADD_COMMUNE,ter)
         },
         [TerritoireTypes.REMOVE_COMMUNE]: (context, ter) =>{
             context.commit(TerritoireTypes.REMOVE_COMMUNE, ter);

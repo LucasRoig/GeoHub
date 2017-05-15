@@ -3,6 +3,7 @@
         <div class="row" id="head">
             <div class="col-md-2">
                 <router-link :to="'/dataset/' + this.$route.params.datasetid" class="btn btn-default btn-lg">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                     Retour
                 </router-link>
             </div>
@@ -42,11 +43,13 @@
                             <th class="col-md-5">
                                 Valeur
                             </th>
+                            <!--
                             <th class="col-md-2">
                                 <button class="btn btn-primary pull-right">
                                     <span class ="glyphicon glyphicon-plus"></span>
                                 </button>
                             </th>
+                            -->
                         </tr>
                     </thead>
                     <tbody>

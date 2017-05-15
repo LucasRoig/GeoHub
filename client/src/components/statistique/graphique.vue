@@ -119,6 +119,10 @@ export default{
                         ticks: {
                             beginAtZero:true
                         }
+                    }],
+                    xAxes: [{
+                        type: 'linear',
+                        position: 'bottom'
                     }]
                 }
             }
@@ -135,10 +139,11 @@ export default{
             let label = val.nom;
             let data = [];
             let donnees = val.donnees;
+            console.log("ici")
             this.territoire.forEach(v => {
                 labelsVille.push(v.nom);
                 let d = donnees.find(d => d.codeGeo == v.id);
-                console.log(d.valeur)
+                console.log(d)
                 data.push(d.valeur);
                 backColorList.push(backgroundColor);
                 borderColorList.push(borderColor);

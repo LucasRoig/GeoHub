@@ -24,6 +24,7 @@ export default {
         this.renderChart();
     },
     updated(){
+        console.log(this.dataObject)
         this.myChart.update();
     }
 }

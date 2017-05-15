@@ -35,9 +35,11 @@
                 <h2 class="col-md-offset-2">Territoire actuel :</h2>
             </div>
             <div class="col-md-8 col-md-offset-2">
+                <!--
                 <div class="alert alert-info chargement alert-ajout" role="alert">
                     <p>Chargement des données ...</p>
                 </div>
+                -->
                 <table class="table table-bordered table-responsive text-center">
                     <tbody>
                     <tr class="row" v-for="com, i in territoire">
@@ -48,7 +50,7 @@
                             {{com.id}}
                         </td>
                         <td class="col-md-2">
-                            <button class="btn btn-sm" type="button" v-on:click="removeCommune(i)">Supprimer</button>
+                            <button class="btn btn-danger" type="button" v-on:click="removeCommune(i)">Retirer</button>
                         </td>
                     </tr>
                     </tbody>
