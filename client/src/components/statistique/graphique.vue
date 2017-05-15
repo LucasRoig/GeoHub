@@ -10,24 +10,7 @@
         </v-select>
 
         <div v-show="selectedChart == 'Histogramme'">
-            <div class="row">
-                <div class="col-md-6">
-                    <v-select
-                        :options="dataset"
-                        v-model="selectedDataset"
-                        label="nom"
-                    ></v-select>
-                </div>
-                <div class="col-md-6" v-if="selectedDataset">
-                    <v-select
-                        :options="selectedDataset.variables"
-                        v-model="selectedVariable"
-                        :on-change="updateBarChart"
-                        label="nom"
-                    ></v-select>
-                </div>
-            </div>
-            <bar-chart :dataObject="dataObject" :options="options" style="width: 512px; height: 256px"></bar-chart>
+            <bar-chart-comp></bar-chart-comp>
         </div>
 
         <div v-show="selectedChart == 'Ligne'">
@@ -71,12 +54,14 @@
 <script>
     import * as DatasetTypes from '../../store/dataset/datasetTypes'
     import * as TerritoireTypes from '../../store/carte/territoireTypes'
+    import BarChartComp from './barChartComp.vue'
     import BarChart from './barChart.vue'
     import LineChart from './lineChart.vue'
     import vSelect from "vue-select"
 export default{
     name:'graphique',
     components:{
+        BarChartComp,
         BarChart,
         LineChart,
         vSelect
