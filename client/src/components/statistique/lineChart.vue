@@ -1,5 +1,5 @@
 <template>
-    <canvas>{{data}}</canvas>
+    <canvas :style="'height:' + size">{{data}}</canvas>
 </template>
 <script>
     import Chart from 'chart.js'
@@ -25,6 +25,11 @@ export default {
     },
     updated(){
         this.myChart.update();
+    },
+    computed:{
+        size(){
+            return '100 px';
+        }
     }
 }
 </script>

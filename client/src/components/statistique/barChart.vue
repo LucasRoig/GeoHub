@@ -1,5 +1,5 @@
 <template>
-    <canvas>{{dataObject}}</canvas>
+    <canvas height="350">{{dataObject}}</canvas>
 </template>
 <script>
     import Chart from 'chart.js'
@@ -24,6 +24,7 @@ export default {
         this.renderChart();
     },
     updated(){
+        console.log(this.dataObject)
         this.myChart.update();
     }
 }

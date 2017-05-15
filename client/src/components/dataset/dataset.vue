@@ -1,6 +1,16 @@
 <template>
-    <div class="container">
-        <h1>Dataset</h1>
+    <div class="container-fluid">
+        <div class="row" id="head">
+            <div class="col-md-2">
+                <router-link to="/carte" class="btn btn-default btn-lg">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    Retour
+                </router-link>
+            </div>
+            <div class="col-md-10">
+                <h1>Datasets</h1>
+            </div>
+        </div>
         <div class="col-md-offset-2 col-md-8">
             <table class="table table-bordered table-responsive text-center">
                 <thead>
@@ -39,13 +49,13 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h2 class="modal-title" id="myModalLabel">Confirmez votre choix dramatique</h2>
+                            <h2 class="modal-title" id="myModalLabel">Confirmez votre choix</h2>
                         </div>
                         <div class="modal-body">
                             Etes-vous sûr de voloir supprimer le dataset ?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
                             <button type="button" class="btn btn-danger" v-on:click='deleteDataset(id)'>Supprimer</button>
                         </div>
                     </div>

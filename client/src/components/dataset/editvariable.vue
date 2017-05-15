@@ -3,6 +3,7 @@
         <div class="row" id="head">
             <div class="col-md-2">
                 <router-link :to="'/dataset/' + this.$route.params.datasetid" class="btn btn-default btn-lg">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                     Retour
                 </router-link>
             </div>
@@ -33,41 +34,56 @@
                 <table class="table table-bordered table-responsive text-center">
                     <thead>
                         <tr class="row">
-                            <th class="col-md-5">
+                            <th class="col-md-4">
                                 ID
                             </th>
-                            <th class="col-md-5">
+                            <th class="col-md-4">
                                 CodeGeo
                             </th>
-                            <th class="col-md-5">
+                            <th class="col-md-4">
                                 Valeur
                             </th>
-                            <th class="col-md-2">
-                                <button class="btn btn-primary pull-right">
-                                    <span class ="glyphicon glyphicon-plus"></span>
-                                </button>
+                            <th>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="row" v-for="d in variable.donnees">
-                            <td class="col-md-5">
+                            <td class="col-md-4">
                                 <p>{{d.id}}</p>
                             </td>
-                            <td class="col-md-5">
+                            <td class="col-md-3">
                                 <p>{{d.codeGeo}}</p>
                             </td>
-                            <td class="col-md-5">
+                            <td class="col-md-3">
                                 <p>{{d.valeur}}</p>
                             </td>
                             <td class="col-md-2">
-                                <button class="btn btn-danger pull-right" v-on:click='deleteDonnee(d.id)'>
+                                <button class="btn btn-danger pull-right" v-on:click='showModal(d.id)'>
                                     <span class ="glyphicon glyphicon-remove"></span>
                                 </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h2 class="modal-title" id="myModalLabel">Confirmez votre choix</h2>
+                            </div>
+                            <div class="modal-body">
+                                Etes-vous sûr de voloir supprimer la données ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                                <button type="button" class="btn btn-danger" v-on:click='deleteDonnee(id)'>Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -76,13 +92,23 @@
     import * as DatasetTypes from '../../store/dataset/datasetTypes'
     export default{
         name:'editvariable',
+        data (){
+            return{
+                id: 0
+            }
+        },
         methods:{
             /*renomme(){
                 console.log($("input").val())
             },*/
             deleteDonnee(dataid){
-                this.$store.dispatch(DatasetTypes.DELETE_DONNEE, dataid)
-            }
+                this.$store.dispatch(DatasetTypes.DELETE_DONNEE, dataid);
+                $('#myModal').modal('hide');
+            },
+            showModal(i) {
+                this.id = i;
+                $('#myModal').modal('show');
+            },
         },
         computed:{
             variable(){

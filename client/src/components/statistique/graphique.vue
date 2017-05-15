@@ -10,73 +10,27 @@
         </v-select>
 
         <div v-show="selectedChart == 'Histogramme'">
-            <div class="row">
-                <div class="col-md-6">
-                    <v-select
-                        :options="dataset"
-                        v-model="selectedDataset"
-                        label="nom"
-                    ></v-select>
-                </div>
-                <div class="col-md-6" v-if="selectedDataset">
-                    <v-select
-                        :options="selectedDataset.variables"
-                        v-model="selectedVariable"
-                        :on-change="updateBarChart"
-                        label="nom"
-                    ></v-select>
-                </div>
-            </div>
-            <bar-chart :dataObject="dataObject" :options="options" style="width: 512px; height: 256px"></bar-chart>
+            <bar-chart-comp></bar-chart-comp>
         </div>
 
         <div v-show="selectedChart == 'Ligne'">
-            <div class="row">
-                <div class="col-md-6">
-                    <v-select
-                        :options="dataset"
-                        v-model="selectedDataset"
-                        label="nom"
-                    ></v-select>
-                </div>
-                <div class="col-md-6" v-if="selectedDataset">
-                    <v-select
-                        :options="selectedDataset.variables"
-                        v-model="selectedVariable"
-                        label="nom"
-                    ></v-select>
-                </div>
-            </div>
-            <div class="row" v-show="selectedVariable">
-                <div class="col-md-6">
-                    <v-select
-                        :options="dataset"
-                        v-model="selectedDataset2"
-                        label="nom"
-                    ></v-select>
-                </div>
-                <div class="col-md-6" v-if="selectedDataset2">
-                    <v-select
-                        :options="selectedDataset2.variables"
-                        v-model="selectedVariable2"
-                        label="nom"
-                        :on-change="updateLineChart"
-                    ></v-select>
-                </div>
-            </div>
-            <line-chart :data="dataObject" :options="options" style="width: 512px; height: 256px"></line-chart>
+            <line-chart-comp></line-chart-comp>
         </div>
     </div>
 </template>
 <script>
     import * as DatasetTypes from '../../store/dataset/datasetTypes'
     import * as TerritoireTypes from '../../store/carte/territoireTypes'
+    import BarChartComp from './barChartComp.vue'
+    import LineChartComp from './lineChartComp.vue'
     import BarChart from './barChart.vue'
     import LineChart from './lineChart.vue'
     import vSelect from "vue-select"
 export default{
     name:'graphique',
     components:{
+        BarChartComp,
+        LineChartComp,
         BarChart,
         LineChart,
         vSelect
@@ -119,6 +73,10 @@ export default{
                         ticks: {
                             beginAtZero:true
                         }
+                    }],
+                    xAxes: [{
+                        type: 'linear',
+                        position: 'bottom'
                     }]
                 }
             }
@@ -135,10 +93,11 @@ export default{
             let label = val.nom;
             let data = [];
             let donnees = val.donnees;
+            console.log("ici")
             this.territoire.forEach(v => {
                 labelsVille.push(v.nom);
                 let d = donnees.find(d => d.codeGeo == v.id);
-                console.log(d.valeur)
+                console.log(d)
                 data.push(d.valeur);
                 backColorList.push(backgroundColor);
                 borderColorList.push(borderColor);
